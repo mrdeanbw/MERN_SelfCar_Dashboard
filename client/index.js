@@ -1,34 +1,17 @@
-/**
- * Client entry point
- */
+/* eslint-disable import/default */
+
 import React from 'react';
 import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import App from './App';
-import { configureStore } from './store';
+import { Router, browserHistory } from 'react-router';
+import routes from './routes';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+require('./favicon.ico');
+import './styles.scss';
+import 'font-awesome/css/font-awesome.css';
+import 'flexboxgrid/css/flexboxgrid.css';
 
-// Initialize store
-const store = configureStore(window.__INITIAL_STATE__);
-const mountApp = document.getElementById('root');
+injectTapEventPlugin();
 
 render(
-  <AppContainer>
-    <App store={store} />
-  </AppContainer>,
-  mountApp
+    <Router routes={routes} history={browserHistory} />, document.getElementById('root')
 );
-
-// For hot reloading of react components
-if (module.hot) {
-  module.hot.accept('./App', () => {
-    // If you use Webpack 2 in ES modules mode, you can
-    // use <App /> here rather than require() a <NextApp />.
-    const NextApp = require('./App').default; // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextApp store={store} />
-      </AppContainer>,
-      mountApp
-    );
-  });
-}

@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var cssnext = require('postcss-cssnext');
 var postcssFocus = require('postcss-focus');
 var postcssReporter = require('postcss-reporter');
+import autoprefixer from 'autoprefixer';
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -12,7 +13,9 @@ module.exports = {
       'webpack-hot-middleware/client',
       'webpack/hot/only-dev-server',
       'react-hot-loader/patch',
-      './client/index.js',
+      './client/webpack-public-path',
+      'webpack-hot-middleware/client?reload=true',
+      './client/index'
     ],
     vendor: [
       'react',
@@ -41,10 +44,12 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'style-loader!css-loader?localIdentName=[name]__[local]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
       }, {
-        test: /\.css$/,
+        test: /(\.css|\.scss)$/,
         include: /node_modules/,
         loaders: ['style-loader', 'css-loader'],
-      }, {
+      },
+      {test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
+      {
         test: /\.jsx*$/,
         exclude: [/node_modules/, /.+\.config.js/],
         loader: 'babel',
@@ -55,6 +60,12 @@ module.exports = {
         test: /\.json$/,
         loader: 'json-loader',
       },
+      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
+      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url?limit=10000&mimetype=application/font-woff"},
+      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
+      {test: /\.(jpe?g|png|gif)$/i, loader: 'file?name=[name].[ext]'},
+      {test: /\.ico$/, loader: 'file?name=[name].[ext]'},
     ],
   },
 
