@@ -36,6 +36,7 @@ import { fetchComponentData } from './util/fetchData';
 import posts from './routes/post.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
+import authRoutes from './routes/auth.routes';
 
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
@@ -57,6 +58,15 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist')));
 app.use(passport.initialize());
+
+// load passport strategies
+const localLoginStrategy = require('./passport/local-login');
+passport.use('local-login', localLoginStrategy);
+
+app.use('/auth', authRoutes);
+
+const authCheckMiddleware = require('./middleware/auth-check');
+app.use('/api', authCheckMiddleware);
 app.use('/api', posts);
 
 // Render Initial HTML
@@ -123,6 +133,8 @@ app.use((req, res, next) => {
 
     return fetchComponentData(store, renderProps.components, renderProps.params)
       .then(() => {
+        //console.log(store);
+        //console.log(renderProps);
         const initialView = renderToString(
           <Provider store={store}>
             <IntlWrapper>

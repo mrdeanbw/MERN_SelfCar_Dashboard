@@ -15,7 +15,8 @@ module.exports = {
       'react-hot-loader/patch',
       './client/webpack-public-path',
       'webpack-hot-middleware/client?reload=true',
-      './client/index'
+      './client/index',
+      './server/shared/validation'
     ],
     vendor: [
       'react',

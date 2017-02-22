@@ -6,14 +6,17 @@ import LoginPage from './containers/LoginPage';
 import FormPage from './containers/FormPage';
 import TablePage from './containers/TablePage';
 import Dashboard from './containers/DashboardPage';
+import requireAuth from './util/requireAuth';
 
 export default (
+  <Route>
+    <Route path="login" component={LoginPage}/>
     <Route path="/" component={App}>
-      <IndexRoute component={Dashboard}/>
-      <Route path="dashboard" component={Dashboard}/>
-      <Route path="form" component={FormPage}/>
-      <Route path="table" component={TablePage}/>
-      <Route path="login" component={LoginPage}/>
+      <IndexRoute component={requireAuth(Dashboard)}/>
+      <Route path="dashboard" component={requireAuth(Dashboard)}  />
+      <Route path="form" component={requireAuth(FormPage)}/>
+      <Route path="table" component={requireAuth(TablePage)}/>
       <Route path="*" component={NotFoundPage}/>
     </Route>
+  </Route>
 );

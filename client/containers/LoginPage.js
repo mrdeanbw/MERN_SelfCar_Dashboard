@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -10,124 +11,184 @@ import Help from 'material-ui/svg-icons/action/help';
 import TextField from 'material-ui/TextField';
 import {Link} from 'react-router';
 import ThemeDefault from '../theme-default';
+import { login } from '../modules/Auth/AuthActions';
+import validateLoginForm from '../../server/shared/validation';
 
-const LoginPage = () => {
+class LoginPage extends React.Component {
 
-  const styles = {
-    loginContainer: {
-      minWidth: 320,
-      maxWidth: 400,
-      height: 'auto',
-      position: 'absolute',
-      top: '20%',
-      left: 0,
-      right: 0,
-      margin: 'auto'
-    },
-    paper: {
-      padding: 20,
-      overflow: 'auto'
-    },
-    buttonsDiv: {
-      textAlign: 'center',
-      padding: 10
-    },
-    flatButton: {
-      color: grey500
-    },
-    checkRemember: {
-      style: {
-        float: 'left',
-        maxWidth: 180,
-        paddingTop: 5
+   constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+      errors: {},
+      isLoading: false
+    };
+
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+   
+   isValid() {
+    const { errors, isValid } = validateLoginForm(this.state);
+
+    if (!isValid) {
+      this.setState({ errors });
+    }
+
+    return isValid;
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    if (this.isValid()) {
+      this.setState({ errors: {}, isLoading: true });
+      this.props.login(this.state).then(
+        (res) => this.context.router.push('/'),
+        (err) => this.setState({ errors: err.response.data.errors, isLoading: false })
+      );
+    }
+  }
+  
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+  
+  render() {
+    const styles = {
+      loginContainer: {
+        minWidth: 320,
+        maxWidth: 400,
+        height: 'auto',
+        position: 'absolute',
+        top: '20%',
+        left: 0,
+        right: 0,
+        margin: 'auto'
       },
-      labelStyle: {
+      paper: {
+        padding: 20,
+        overflow: 'auto'
+      },
+      buttonsDiv: {
+        textAlign: 'center',
+        padding: 10
+      },
+      flatButton: {
         color: grey500
       },
-      iconStyle: {
-        color: grey500,
-        borderColor: grey500,
-        fill: grey500
-      }
-    },
-    loginBtn: {
-      float: 'right'
-    },
-    btn: {
-      background: '#4f81e9',
-      color: white,
-      padding: 7,
-      borderRadius: 2,
-      margin: 2,
-      fontSize: 13
-    },
-    btnFacebook: {
-      background: '#4f81e9'
-    },
-    btnGoogle: {
-      background: '#e14441'
-    },
-    btnSpan: {
-      marginLeft: 5
-    },
-  };
+      checkRemember: {
+        style: {
+          float: 'left',
+          maxWidth: 180,
+          paddingTop: 5
+        },
+        labelStyle: {
+          color: grey500
+        },
+        iconStyle: {
+          color: grey500,
+          borderColor: grey500,
+          fill: grey500
+        }
+      },
+      loginBtn: {
+        float: 'right'
+      },
+      btn: {
+        background: '#4f81e9',
+        color: white,
+        padding: 7,
+        borderRadius: 2,
+        margin: 2,
+        fontSize: 13
+      },
+      btnFacebook: {
+        background: '#4f81e9'
+      },
+      btnGoogle: {
+        background: '#e14441'
+      },
+      btnSpan: {
+        marginLeft: 5
+      },
+    };
 
-  return (
-    <MuiThemeProvider muiTheme={ThemeDefault}>
-      <div>
-        <div style={styles.loginContainer}>
+    const { errors, email, password, isLoading } = this.state;
 
-          <Paper style={styles.paper}>
+    return (
+      <MuiThemeProvider muiTheme={ThemeDefault}>
+        <div>
+          <div style={styles.loginContainer}>
 
-            <form>
-              <TextField
-                hintText="E-mail"
-                floatingLabelText="E-mail"
-                fullWidth={true}
-              />
-              <TextField
-                hintText="Password"
-                floatingLabelText="Password"
-                fullWidth={true}
-                type="password"
-              />
+            <Paper style={styles.paper}>
 
-              <div>
-                <Checkbox
-                  label="Remember me"
-                  style={styles.checkRemember.style}
-                  labelStyle={styles.checkRemember.labelStyle}
-                  iconStyle={styles.checkRemember.iconStyle}
+              <form onSubmit={this.onSubmit}>
+                <TextField
+                  hintText="E-mail"
+                  floatingLabelText="E-mail"
+                  fullWidth={true}
+                  name="email"
+                  value={email}
+                  errorText={errors.email}
+                  onChange={this.onChange}
+                />
+                <TextField
+                  hintText="Password"
+                  floatingLabelText="Password"
+                  fullWidth={true}
+                  type="password"
+                  name="password"
+                  value={password}
+                  errorText={errors.password}
+                  onChange={this.onChange}
                 />
 
-                <Link to="/">
-                  <RaisedButton label="Login"
-                                primary={true}
-                                style={styles.loginBtn}/>
-                </Link>
-              </div>
-            </form>
-          </Paper>
+                <div>
+                  <Checkbox
+                    label="Remember me"
+                    style={styles.checkRemember.style}
+                    labelStyle={styles.checkRemember.labelStyle}
+                    iconStyle={styles.checkRemember.iconStyle}
+                  />
 
-          <div style={styles.buttonsDiv}>
-            <FlatButton
-              label="Register"
-              href="/"
-              style={styles.flatButton}
-              icon={<PersonAdd />}
-            />
+                    <RaisedButton label="Login"
+                                  primary={true}
+                                  disabled={isLoading}
+                                  type='submit'
+                                  style={styles.loginBtn}/>
+                </div>
+              </form>
+            </Paper>
 
-            <FlatButton
-              label="Forgot Password?"
-              href="/"
-              style={styles.flatButton}
-              icon={<Help />}
-            />
+            <div style={styles.buttonsDiv}>
+              <FlatButton
+                label="Register"
+                href="/"
+                style={styles.flatButton}
+                icon={<PersonAdd />}
+              />
+
+              <FlatButton
+                label="Forgot Password?"
+                href="/"
+                style={styles.flatButton}
+                icon={<Help />}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </MuiThemeProvider>
-  );
-};
+      </MuiThemeProvider>
+    );
+  }
+}
 
-export default LoginPage;
+LoginPage.propTypes = {
+  login: React.PropTypes.func.isRequired
+}
+
+LoginPage.contextTypes = {
+  router: React.PropTypes.object.isRequired
+}
+
+export default connect(null, { login })(LoginPage);

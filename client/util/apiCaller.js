@@ -5,9 +5,11 @@ export const API_URL = (typeof window === 'undefined' || process.env.NODE_ENV ==
   process.env.BASE_URL || (`http://localhost:${process.env.PORT || Config.port}/api`) :
   '/api';
 
+var CommonHeaders = { 'content-type': 'application/json' };
+
 export default function callApi(endpoint, method = 'get', body) {
   return fetch(`${API_URL}/${endpoint}`, {
-    headers: { 'content-type': 'application/json' },
+    headers: CommonHeaders,
     method,
     body: JSON.stringify(body),
   })
@@ -23,4 +25,13 @@ export default function callApi(endpoint, method = 'get', body) {
     response => response,
     error => error
   );
+}
+
+export function setAuthorizationToken(token) {
+  if (token) {
+    CommonHeaders['Authorization'] = 'Bearer ${token}';
+  }
+  else {
+    delete CommonHeaders['Authorization'];
+  }
 }
