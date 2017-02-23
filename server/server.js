@@ -63,11 +63,12 @@ app.use(passport.initialize());
 const localLoginStrategy = require('./passport/local-login');
 passport.use('local-login', localLoginStrategy);
 
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 const authCheckMiddleware = require('./middleware/auth-check');
 app.use('/api', authCheckMiddleware);
 app.use('/api', posts);
+
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
