@@ -1,6 +1,7 @@
 import {setAuthorizationToken} from '../../util/apiCaller';
 import callApi from '../../util/apiCaller';
 import jwtDecode from 'jwt-decode';
+import { browserHistory } from 'react-router';
 
 
 // Export Constants
@@ -26,10 +27,12 @@ export function logout() {
 export function login(data) {
   return dispatch => {
     return callApi('auth/login', 'post', data).then(res => {
-      const token = res.data.token;
-      localStorage.setItem('jwtToken', token);
-      setAuthorizationToken(token);
+      const token = res.token;
       dispatch(setCurrentUser(jwtDecode(token)));
+      setAuthorizationToken(token);
+      localStorage.setItem('jwtToken', token);
+      browserHistory.push('/');
     });
   }
 }
+

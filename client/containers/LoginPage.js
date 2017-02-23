@@ -9,7 +9,7 @@ import {grey500, white} from 'material-ui/styles/colors';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
 import TextField from 'material-ui/TextField';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 import ThemeDefault from '../theme-default';
 import { login } from '../modules/Auth/AuthActions';
 import validateLoginForm from '../../server/shared/validation';
@@ -42,11 +42,9 @@ class LoginPage extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.isValid()) {
+      this.props.login(this.state);
+    } else {
       this.setState({ errors: {}, isLoading: true });
-      this.props.login(this.state).then(
-        (res) => this.context.router.push('/'),
-        (err) => this.setState({ errors: err.response.data.errors, isLoading: false })
-      );
     }
   }
   

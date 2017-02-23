@@ -11,6 +11,7 @@ import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
 import { configureStore } from './store';
 import { Provider } from 'react-redux';
+import { setCurrentUser } from './modules/Auth/AuthActions';
 
 injectTapEventPlugin();
 
@@ -20,9 +21,16 @@ const preloadedState = window.__INITIAL_STATE__;
 delete window.__INITIAL_STATE__;
 
 const store = configureStore(preloadedState);
+const token = localStorage.getItem('jwtToken');
+
+if (token) {
+  store.dispatch(setCurrentUser(token));
+}
 
 render(
     <Provider store={store}>
-        <Router routes={routes} history={browserHistory} />
+        <Router history={browserHistory} >
+            {routes}
+        </Router>
     </Provider>, document.getElementById('root')
 );
