@@ -7,6 +7,8 @@ import FormPage from './containers/FormPage';
 import TablePage from './containers/TablePage';
 import Dashboard from './containers/DashboardPage';
 import requireAuth from './util/requireAuth';
+import requireRole from './util/requireRole';
+import UserTable from './components/UserTable';
 
 export default (
   <Route>
@@ -16,6 +18,7 @@ export default (
       <Route path="dashboard" component={requireAuth(Dashboard)}  />
       <Route path="form" component={requireAuth(FormPage)}/>
       <Route path="table" component={requireAuth(TablePage)}/>
+      <Route path="users" component={requireAuth(requireRole(UserTable, 'admin'))} />
       <Route path="*" component={NotFoundPage}/>
     </Route>
   </Route>
