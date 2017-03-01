@@ -9,7 +9,7 @@ const userSchema = new Schema({
   },
   password: String,
   name: String,
-  roles: [Schema.Types.ObjectId],
+  roles: [{type: Schema.Types.ObjectId, ref : 'role'}],
 });
 
 /**

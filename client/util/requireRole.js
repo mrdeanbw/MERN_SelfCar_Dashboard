@@ -39,7 +39,7 @@ export default function(ComposedComponent, requiredRole) {
 
   function mapStateToProps(state) {
     return {
-      userRoles: state.auth.user.roles ? map(state.auth.user.roles, 'name') : []
+      userRoles: state.auth.user.roles ? state.auth.user.roles : []
     };
   }
 

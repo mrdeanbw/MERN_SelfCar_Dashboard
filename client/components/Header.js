@@ -8,11 +8,30 @@ import Menu from 'material-ui/svg-icons/navigation/menu';
 import ViewModule from 'material-ui/svg-icons/action/view-module';
 import {white} from 'material-ui/styles/colors';
 import SearchBox from './SearchBox';
+import { connect } from 'react-redux';
+import { logout } from '../modules/Auth/AuthActions';
 
 class Header extends React.Component {
 
+  logout(e) {
+    e.preventDefault();
+    this.props.logout();
+  }
+
+  login(e) {
+    e.preventDefault();
+    this.context.router.push('/login');
+  }
+  
   render() {
     const {styles, handleChangeRequestNavDrawer} = this.props;
+    const { isAuthenticated } = this.props.auth;
+    const userLinks = (
+      <MenuItem primaryText="Sign out" onClick={this.logout.bind(this)}/>
+    )
+    const guestLinks = (
+      <MenuItem primaryText="Sign in" onClick={this.login.bind(this)} />
+    )
 
     const style = {
       appBar: {
@@ -61,7 +80,7 @@ class Header extends React.Component {
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   >
-                    <MenuItem primaryText="Sign out"/>
+                    { isAuthenticated ? userLinks : guestLinks }
                   </IconMenu>
                 </div>
               }
@@ -73,7 +92,18 @@ class Header extends React.Component {
 
 Header.propTypes = {
   styles: PropTypes.object,
-  handleChangeRequestNavDrawer: PropTypes.func
+  handleChangeRequestNavDrawer: PropTypes.func,
+  logout: PropTypes.func
 };
 
-export default Header;
+Header.contextTypes = {
+  router: PropTypes.object.isRequired
+};
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+
+export default connect(mapStateToProps, { logout })(Header);

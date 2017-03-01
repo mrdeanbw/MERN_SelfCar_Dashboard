@@ -7,10 +7,10 @@ export const API_URL = (typeof window === 'undefined' || process.env.NODE_ENV ==
 
 //export const API_URL = `http://localhost:${Config.port}`;
 
-const CommonHeaders = new Headers();
-CommonHeaders.append('Content-Type', 'application/json');
+var CommonHeaders = { 'content-type': 'application/json' };
 
 export default function callApi(endpoint, method = 'get', body) {
+  console.log(CommonHeaders);
   return fetch(`${API_URL}/${endpoint}`, {
     headers: CommonHeaders,
     method,
@@ -38,4 +38,5 @@ export function setAuthorizationToken(token) {
   else {
     delete CommonHeaders['Authorization'];
   }
+  console.log(CommonHeaders);
 }

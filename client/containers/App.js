@@ -48,8 +48,7 @@ class App extends React.Component {
                   handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}/>
 
             <LeftDrawer navDrawerOpen={navDrawerOpen}
-                        menus={Data.menus}
-                        username="User Admin"/>
+                        menus={Data.menus} />
 
             <div style={styles.container}>
               {this.props.children}

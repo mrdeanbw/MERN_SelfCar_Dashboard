@@ -12,6 +12,9 @@ import 'flexboxgrid/css/flexboxgrid.css';
 import { configureStore } from './store';
 import { Provider } from 'react-redux';
 import { setCurrentUser } from './modules/Auth/AuthActions';
+import jwtDecode from 'jwt-decode';
+import { setAuthorizationToken } from './util/apiCaller';
+import { IntlWrapper } from './modules/Intl/IntlWrapper';
 
 injectTapEventPlugin();
 
@@ -23,14 +26,19 @@ delete window.__INITIAL_STATE__;
 const store = configureStore(preloadedState);
 const token = localStorage.getItem('jwtToken');
 
+console.log(token);
+
 if (token) {
-  store.dispatch(setCurrentUser(token));
+  setAuthorizationToken(token);
+  store.dispatch(setCurrentUser(jwtDecode(token)));
 }
 
 render(
     <Provider store={store}>
-        <Router history={browserHistory} >
-            {routes}
-        </Router>
+        <IntlWrapper>
+            <Router history={browserHistory} >
+                {routes}
+            </Router>
+        </IntlWrapper>
     </Provider>, document.getElementById('root')
 );

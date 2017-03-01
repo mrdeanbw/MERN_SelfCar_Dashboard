@@ -5,6 +5,7 @@ import {white, blue600} from 'material-ui/styles/colors';
 import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router';
 import Avatar from 'material-ui/Avatar';
+import { connect } from 'react-redux';
 
 const LeftDrawer = (props) => {
   let { navDrawerOpen } = props;
@@ -51,13 +52,13 @@ const LeftDrawer = (props) => {
       docked={true}
       open={navDrawerOpen}>
         <div style={styles.logo}>
-          Material Admin
+          Script
         </div>
         <div style={styles.avatar.div}>
           <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg"
                   size={50}
                   style={styles.avatar.icon}/>
-          <span style={styles.avatar.span}>{props.username}</span>
+          <span style={styles.avatar.span}>{props.userName}</span>
         </div>
         <div>
           {props.menus.map((menu, index) =>
@@ -77,7 +78,13 @@ const LeftDrawer = (props) => {
 LeftDrawer.propTypes = {
   navDrawerOpen: PropTypes.bool,
   menus: PropTypes.array,
-  username: PropTypes.string,
+  userName: PropTypes.string,
 };
 
-export default LeftDrawer;
+ function mapStateToProps(state) {
+    return {
+      userName: state.auth.user.name || ''
+    };
+  }
+
+export default connect(mapStateToProps)(LeftDrawer);

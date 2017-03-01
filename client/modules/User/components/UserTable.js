@@ -6,7 +6,8 @@ import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import { typography } from 'material-ui/styles';
 import { white, cyan600 } from 'material-ui/styles/colors';
-
+import ActionDelete from 'material-ui/svg-icons/action/delete';
+import IconButton from 'material-ui/IconButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
@@ -27,22 +28,23 @@ const styles = {
   },
 };
 
-const UserTable = ({ usersTable }) => {
+const UserTable = (props) => {
   return (
     <Paper>
-      <Subheader style={styles.subheader} >Users Menu</Subheader>
+      <Subheader style={styles.subheader} >Users</Subheader>
       <Table>
         <TableHeader {...styles.headerProps}>
           <TableRow>
             <TableHeaderColumn>Name</TableHeaderColumn>
             <TableHeaderColumn>Email</TableHeaderColumn>
             <TableHeaderColumn>Roles</TableHeaderColumn>
+            <TableHeaderColumn>Actions</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody
           displayRowCheckbox={false}
         >
-          {usersTable.map((user, index) => {
+          {props.users.map((user, index) => {
             return (
               <TableRow
                 key={index}
@@ -52,11 +54,14 @@ const UserTable = ({ usersTable }) => {
                 <TableRowColumn><DropDownMenu style={styles.checkbox} >{user.roles.map((role, i) => {
                   return (<Checkbox
                     key={i}
-                    label={role.roleName}
+                    label={role.name}
                     style={styles.checkbox}
                     defaultChecked
                   />);
                 })}</DropDownMenu></TableRowColumn>
+                <TableRowColumn>
+                  <IconButton className={styles['post-action']} onClick={() => props.handleDeleteUser(user.cuid)}><ActionDelete /></IconButton>
+                </TableRowColumn>
               </TableRow>
             );
           })}
@@ -67,11 +72,18 @@ const UserTable = ({ usersTable }) => {
 };
 
 UserTable.propTypes = {
-  usersTable: PropTypes.array,
+  users: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    roles: PropTypes.array.isRequired,
+    slug: PropTypes.string.isRequired,
+    cuid: PropTypes.string.isRequired,
+  })).isRequired,
+  handleDeletePost: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  usersTable: state.credentials.table,
+  
 });
 
 export default connect(mapStateToProps)(UserTable);

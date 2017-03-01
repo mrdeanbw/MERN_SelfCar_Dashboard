@@ -34,6 +34,7 @@ import Helmet from 'react-helmet';
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import posts from './routes/post.routes';
+import users from './routes/user.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
 import authRoutes from './routes/auth.routes';
@@ -68,6 +69,7 @@ app.use('/api/auth', authRoutes);
 const authCheckMiddleware = require('./middleware/auth-check');
 app.use('/api', authCheckMiddleware);
 app.use('/api', posts);
+app.use('/api', users);
 
 
 // Render Initial HTML
