@@ -9,6 +9,7 @@ import posts from './modules/Post/PostReducer';
 import intl from './modules/Intl/IntlReducer';
 import auth from './modules/Auth/AuthReducer';
 import users from './modules/User/UserReducer';
+import roles from './modules/Role/RoleReducer';
 
 // Combine all reducers into one root reducer
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
   posts,
   users,
   intl,
-  auth
+  auth,
+  roles,
 });

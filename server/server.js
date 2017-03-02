@@ -35,6 +35,7 @@ import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import posts from './routes/post.routes';
 import users from './routes/user.routes';
+import roles from './routes/role.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
 import authRoutes from './routes/auth.routes';
@@ -70,6 +71,7 @@ const authCheckMiddleware = require('./middleware/auth-check');
 app.use('/api', authCheckMiddleware);
 app.use('/api', posts);
 app.use('/api', users);
+app.use('/api', roles);
 
 
 // Render Initial HTML

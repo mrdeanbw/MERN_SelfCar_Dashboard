@@ -7,14 +7,17 @@ import UserCreateWidget from '../../components/UserCreateWidget/UserCreateWidget
 
 // Import Actions
 import { addUserRequest, fetchUsers, deleteUserRequest } from '../../UserActions';
+import { fetchRoles } from '../../../Role/RoleActions';
 //import { toggleAddPost } from '../../../App/AppActions';
 
 // Import Selectors
 import { getUsers } from '../../UserReducer';
+import { getRoles } from '../../../Role/RoleReducer';
 
 class UserTablePage extends Component {
   componentDidMount() {
     this.props.dispatch(fetchUsers());
+    this.props.dispatch(fetchRoles());
   }
 
   handleDeletePost = user => {
@@ -30,7 +33,7 @@ class UserTablePage extends Component {
   render() {
     return (
       <div>
-        <UserCreateWidget addUser={this.handleAddUser} roles={[{name:'Admin', id:'jhjhj'},{name:'Manager', id:'jhjhj'} ]} />
+        <UserCreateWidget addUser={this.handleAddUser} roles={this.props.roles} />
         <UserTable handleDeleteUser={this.handleDeleteUser} users={this.props.users} />
       </div>
     );
@@ -38,12 +41,14 @@ class UserTablePage extends Component {
 }
 
 // Actions required to provide data for this component to render in sever side.
-UserTablePage.need = [() => { return fetchUsers(); }];
+UserTablePage.need = [() => { return fetchUsers(); },
+                      () => { return fetchRoles(); }];
 
 // Retrieve data from store as props
 function mapStateToProps(state) {
   return {
     users: getUsers(state),
+    roles: getRoles(state)
   };
 }
 
@@ -55,6 +60,10 @@ UserTablePage.propTypes = {
     roles: PropTypes.array,
   })).isRequired,
   dispatch: PropTypes.func.isRequired,
+  roles: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired
+  })).isRequired,
 };
 
 UserTablePage.contextTypes = {
