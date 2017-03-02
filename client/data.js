@@ -2,6 +2,7 @@ import React from 'react';
 import Assessment from 'material-ui/svg-icons/action/assessment';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import PermIdentity from 'material-ui/svg-icons/action/perm-identity';
+import AccountBox from 'material-ui/svg-icons/action/account-box';
 import Web from 'material-ui/svg-icons/av/web';
 import {cyan600, pink600, purple600} from 'material-ui/styles/colors';
 import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
@@ -11,7 +12,8 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 const data = {
   menus: [
     { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
-    { text: 'Users', icon: <PermIdentity/>, link: '/users' }
+    { text: 'Users', icon: <PermIdentity/>, link: '/users' },
+    { text: 'Accounts', icon: <AccountBox/>, link: '/accounts' }
   ],
   tablePage: {
     items: [

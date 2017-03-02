@@ -10,6 +10,7 @@ import intl from './modules/Intl/IntlReducer';
 import auth from './modules/Auth/AuthReducer';
 import users from './modules/User/UserReducer';
 import roles from './modules/Role/RoleReducer';
+import accounts from './modules/Account/AccountReducer';
 
 // Combine all reducers into one root reducer
 export default combineReducers({
@@ -19,4 +20,5 @@ export default combineReducers({
   intl,
   auth,
   roles,
+  accounts
 });

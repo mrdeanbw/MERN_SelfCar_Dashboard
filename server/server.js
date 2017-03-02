@@ -36,6 +36,7 @@ import { fetchComponentData } from './util/fetchData';
 import posts from './routes/post.routes';
 import users from './routes/user.routes';
 import roles from './routes/role.routes';
+import accounts from './routes/account.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
 import authRoutes from './routes/auth.routes';
@@ -72,6 +73,7 @@ app.use('/api', authCheckMiddleware);
 app.use('/api', posts);
 app.use('/api', users);
 app.use('/api', roles);
+app.use('/api', accounts);
 
 
 // Render Initial HTML
