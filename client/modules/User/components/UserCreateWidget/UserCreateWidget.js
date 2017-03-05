@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import Checkbox from 'material-ui/Checkbox';
+import find from 'lodash/find';
 
 // Import Style
 import styles from './UserCreateWidget.css';
@@ -11,11 +12,18 @@ export class UserCreateWidget extends Component {
     const nameRef = this.refs.name;
     const emailRef = this.refs.email;
     const passwordRef = this.refs.password;
-    const rolesRef = this.refs.roles;
+    const refs = this.refs;
+    const rolesRef = find(this.props.roles, (role) => {
+      if (refs[role._id].isChecked()) {
+        return role._id;
+      }
+    });
     if (nameRef.value && emailRef.value && passwordRef.value) {
-      this.props.addUser(nameRef.value, emailRef.value, passwordRef.value, rolesRef.value);
+      this.props.addUser(nameRef.value, emailRef.value, passwordRef.value, rolesRef || []);
       nameRef.value = emailRef.value = passwordRef.value = '';
-      rolesRef.value = [];
+      this.props.roles.forEach(function(role) {
+        this.refs[role._id].setChecked(false);
+      }, this);
     }
   };
 
@@ -30,10 +38,11 @@ export class UserCreateWidget extends Component {
           <input placeholder="Password" type="password" className={styles['form-field']} ref="password" />
           {this.props.roles.map((role, i) => {
                   return (<Checkbox
-                    key={role.id}
+                    key={i}
                     label={role.name}
                     style={styles.checkbox}
                     defaultUnChecked
+                    ref={role._id}
                   />);
                 })}<br />
           <a className={styles['user-submit-button']} href="#" onClick={this.addUser}><FormattedMessage id="submit" /></a>

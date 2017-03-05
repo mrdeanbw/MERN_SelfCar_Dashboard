@@ -15,4 +15,7 @@ router.route('/accounts').post(AccountController.addAccount);
 // Delete a post by cuid
 router.route('/accounts/:cuid').delete(AccountController.deleteAccount);
 
+// Update account by cuid
+router.route('/accounts/:cuid').put(AccountController.updateAccount);
+
 export default router;

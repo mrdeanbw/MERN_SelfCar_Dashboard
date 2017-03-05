@@ -3,6 +3,7 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import PermIdentity from 'material-ui/svg-icons/action/perm-identity';
 import AccountBox from 'material-ui/svg-icons/action/account-box';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import Web from 'material-ui/svg-icons/av/web';
 import {cyan600, pink600, purple600} from 'material-ui/styles/colors';
 import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
@@ -13,7 +14,8 @@ const data = {
   menus: [
     { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
     { text: 'Users', icon: <PermIdentity/>, link: '/users' },
-    { text: 'Accounts', icon: <AccountBox/>, link: '/accounts' }
+    { text: 'Accounts', icon: <AccountBox/>, link: '/accounts' },
+    { text: 'Assigners', icon: <ActionAssignment/>, link: '/assigners' }
   ],
   tablePage: {
     items: [

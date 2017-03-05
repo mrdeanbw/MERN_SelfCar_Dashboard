@@ -20,8 +20,9 @@ export function addUserRequest(user) {
         name: user.name,
         email: user.email,
         password: user.password,
+        roles: user.roles
       },
-    }).then(res => dispatch(addPost(res.user)));
+    }).then(res => dispatch(addUser(res.user)));
   };
 }
 

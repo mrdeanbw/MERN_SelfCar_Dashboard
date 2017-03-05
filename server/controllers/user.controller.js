@@ -41,7 +41,9 @@ export function addUser(req, res) {
     if (err) {
       res.status(500).send(err);
     }
-    res.json({ user: saved });
+    saved.populate('roles', (err, savedUser)  => {
+      res.json({ user: savedUser });
+    });
   });
 }
 

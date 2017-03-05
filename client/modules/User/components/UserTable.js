@@ -7,6 +7,7 @@ import Subheader from 'material-ui/Subheader';
 import { typography } from 'material-ui/styles';
 import { white, cyan600 } from 'material-ui/styles/colors';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
+import ActionUpdate from 'material-ui/svg-icons/action/update'
 import IconButton from 'material-ui/IconButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
@@ -61,6 +62,7 @@ const UserTable = (props) => {
                 })}</DropDownMenu></TableRowColumn>
                 <TableRowColumn>
                   <IconButton className={styles['post-action']} onClick={() => props.handleDeleteUser(user.cuid)}><ActionDelete /></IconButton>
+                  <IconButton className={styles['post-action']} onClick={() => props.handleDeleteUser(user.cuid)}><ActionUpdate /></IconButton>
                 </TableRowColumn>
               </TableRow>
             );
@@ -76,10 +78,9 @@ UserTable.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     roles: PropTypes.array.isRequired,
-    slug: PropTypes.string.isRequired,
     cuid: PropTypes.string.isRequired,
   })).isRequired,
-  handleDeletePost: PropTypes.func.isRequired,
+  handleDeleteUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

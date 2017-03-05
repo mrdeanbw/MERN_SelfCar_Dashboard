@@ -75,3 +75,25 @@ export function deleteAccount(req, res) {
     });
   });
 }
+
+/**
+ * Update a account
+ * @param req
+ * @param res
+ * @returns void
+ */
+export function updateAccount(req, res) {
+  Account.findOne({ cuid: req.params.cuid }).exec((err, account) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+
+    account.users = req.body.account.users;
+    account.save((err, saved) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+      res.json({ account: saved });
+    });
+  });
+}

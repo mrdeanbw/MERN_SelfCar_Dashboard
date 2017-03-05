@@ -10,6 +10,7 @@ import requireAuth from './util/requireAuth';
 import requireRole from './util/requireRole';
 import UserTable from './modules/User/pages/UserTablePage/UserTablePage';
 import AccountList from './modules/Account/pages/AccountListPage/AccountListPage';
+import AccountDetailPage from './modules/Account/pages/AccountDetailPage/AccountDetailPage';
 
 export default (
   <Route>
@@ -19,6 +20,7 @@ export default (
       <Route path="dashboard" component={requireAuth(Dashboard)}  />
       <Route path="users" component={requireAuth(requireRole(UserTable, 'Admin'))} />
       <Route path="accounts" component={requireAuth(requireRole(AccountList, 'Admin'))} />
+      <Route path="accounts/:cuid" component={requireAuth(requireRole(AccountDetailPage, 'Admin'))} />
       <Route path="*" component={NotFoundPage}/>
     </Route>
   </Route>

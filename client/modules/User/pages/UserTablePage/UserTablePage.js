@@ -20,7 +20,7 @@ class UserTablePage extends Component {
     this.props.dispatch(fetchRoles());
   }
 
-  handleDeletePost = user => {
+  handleDeleteUser = user => {
     if (confirm('Do you want to delete this user')) { // eslint-disable-line
       this.props.dispatch(deleteUserRequest(user));
     }

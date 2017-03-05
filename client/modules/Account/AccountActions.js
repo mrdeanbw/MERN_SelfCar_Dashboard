@@ -57,3 +57,14 @@ export function deleteAccountRequest(cuid) {
     return callApi(`accounts/${cuid}`, 'delete').then(() => dispatch(deleteAccount(cuid)));
   };
 }
+
+export function associateUsersRequest(account) {
+  var cuid = account.cuid;
+  return (dispatch) => {
+    return callApi(`accounts/${cuid}`, 'put', {
+      account: {
+        users: account.usersRef,
+      },
+    });
+  };
+}

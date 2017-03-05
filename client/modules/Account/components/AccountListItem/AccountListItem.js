@@ -9,7 +9,7 @@ function AccountListItem(props) {
   return (
     <div className={styles['single-account']}>
       <h3 className={styles['account-title']}>
-        <Link to={`/accounts/${props.account.slug}-${props.account.cuid}`} >
+        <Link to={`/accounts/${props.account.cuid}`} >
           {props.account.email}
         </Link>
       </h3>
