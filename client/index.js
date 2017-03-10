@@ -26,7 +26,7 @@ delete window.__INITIAL_STATE__;
 const store = configureStore(preloadedState);
 const token = localStorage.getItem('jwtToken');
 
-console.log(token);
+//console.log(token);
 
 if (token) {
   setAuthorizationToken(token);
