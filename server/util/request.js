@@ -5,7 +5,7 @@ export const API_URL = baseUrl;
 
 var CommonHeaders = { 'content-type': 'application/json' };
 
-export default function callApi(endpoint, method = 'get', body, extraHeaders) {
+export default function callApi(endpoint, extraHeaders, method = 'get', body) {
   Object.keys(extraHeaders).forEach(function(key) {
     CommonHeaders[key] = extraHeaders[key];
   }, this);

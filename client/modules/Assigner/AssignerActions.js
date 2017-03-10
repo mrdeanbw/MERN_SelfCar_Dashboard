@@ -66,7 +66,7 @@ export function updatePositions(positions) {
 
 export function fetchPositions(submissionId) {
   return (dispatch) => {
-    return callApi('projects/positions', 'get', submissionId).then(res => {
+    return callApi('projects/positions/' + submissionId, 'get').then(res => {
       dispatch(updatePositions(res.positions));
     });
   };

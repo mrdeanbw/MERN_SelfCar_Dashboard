@@ -50,13 +50,15 @@ class Assigner extends Component {
   }
 
   startPollingPositions = (submissionId) => {
+    console.log("Starting to poll!");
+    console.log(submissionId);
     this.props.dispatch(fetchPositions(submissionId));
     setTimeout(() => this.startPollingPositions(submissionId), 120000);
   }
 
   componentWillReceiveProps(nextProps) {
     // Fetch positions if we have a current submission
-    if (!this.pollingStarted && nextProps.currentSubmission.id) {
+    if (!this.pollingStarted && nextProps.currentSubmission && nextProps.currentSubmission.id) {
       this.startPollingPositions(nextProps.currentSubmission.id);
       this.pollingStarted = true;
     }
