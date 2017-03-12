@@ -15,14 +15,23 @@ import Divider from 'material-ui/Divider';
 import styles from './QueueListItem.css';
 
 function QueueListItem(props) {
+  let steps = [];
+
+  for(var i = props.queue.position; i > 0; i-- ) {
+    steps.push(<Step>
+        <StepLabel> </StepLabel>
+    </Step>);
+  }
   return (
     <div className={styles['single-queue']}>
-      <Badge badgeContent={props.queue.language}>
+      <Badge badgeContent={props.queue.language} secondary={true} badgeStyle={{fontSize: 10, width: 32}}>
         <Chip key={props.queue.project_id}>
             {props.queue.project_id}
         </Chip>
       </Badge>
-      <p>{props.queue.position}</p> 
+      <Stepper activeStep={props.queue.position} >
+          {steps}
+      </Stepper>
     </div>
   );
 }

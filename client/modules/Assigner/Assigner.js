@@ -5,15 +5,17 @@ import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import Chip from 'material-ui/Chip';
 import QueueList from './components/QueueList';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 // Import Style
 import styles from './Assigner.css';
 
 // Import Actions
-import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions } from './AssignerActions';
+import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions, setError } from './AssignerActions';
 
 // Import Selectors
-import { getProjects, getPositions, getSelectedProjects, getSubmission } from './AssignerReducer';
+import { getProjects, getPositions, getSelectedProjects, getSubmission, getError } from './AssignerReducer';
 
 class Assigner extends Component {
   
@@ -70,7 +72,7 @@ class Assigner extends Component {
 
   handlePostSubmissions = (selectedProjects) => {
     this.props.dispatch(postSubmissions(selectedProjects.map(value => {
-      return {project_id: value.project_id, language: value.project.languages_to_recruit[0] || "en-us"};
+      return {project_id: value.project_id, language: 'en-us'};
     })));
   }
 
@@ -86,8 +88,19 @@ class Assigner extends Component {
       </Chip>
     );
   }
+
+  handleClose = () => {
+    this.props.dispatch(setError(""));
+  };
   
   render() {
+    const actions = [
+      <FlatButton
+        label="OK"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+    ];
     return (
       <div>
         <Card expanded="true">
@@ -105,10 +118,19 @@ class Assigner extends Component {
           <CardActions>
             <RaisedButton primary={true} label="Start"
                 onClick={() => this.handlePostSubmissions(this.props.selectedProjects)}
-                disabled={this.props.selectedProjects.length == 0 || this.props.currentSubmission}  style={this.styles.startButton} />
+                disabled={this.props.selectedProjects.length == 0 || this.props.currentSubmission.id}  style={this.styles.startButton} />
           </CardActions>
         </Card>
         <QueueList queues={this.props.positions} />
+        <Dialog
+          title="API Error"
+          actions={actions}
+          modal={true}
+          open={this.props.error && this.props.error.length > 0}
+          onRequestClose={this.handleClose}
+        >
+        {this.props.error}
+        </Dialog>
       </div>
     );
   }
@@ -122,6 +144,7 @@ const mapStateToProps = (state) => {
     positions: getPositions(state),
     selectedProjects: getSelectedProjects(state),
     currentSubmission: getSubmission(state),
+    error: getError(state)
   };
 };
 
@@ -134,6 +157,7 @@ Assigner.propTypes = {
   dispatch: PropTypes.func.isRequired,
   positions: PropTypes.array.isRequired,
   currentSubmission: PropTypes.object.isRequired,
+  error: PropTypes.string
 };
 
 Assigner.contextTypes = {

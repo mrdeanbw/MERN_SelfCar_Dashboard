@@ -5,6 +5,7 @@ export const ADD_PROJECTS = 'ADD_PROJECTS';
 export const TOGGLE_PROJECT = 'TOGGLE_PROJECT';
 export const UPDATE_SUBMISSION = 'UPDATE_SUBMISSION';
 export const UPDATE_POSITIONS = 'UPDATE_POSITIONS';
+export const SET_ERROR = 'SET_ERROR';
 
 // Export Actions
 export function addProjects(projects) {
@@ -36,14 +37,21 @@ export function updateSubmission(submission) {
   };
 }
 
+export function setError(message) {
+  return {
+    type: SET_ERROR,
+    message,
+  };
+}
+
 export function postSubmissions(projects) {
   return (dispatch) => {
     return callApi('projects', 'post', projects).then(res => {
-      if (!res.submission.error) {
+      if (res.success) {
         dispatch(updateSubmission(res.submission));
       }
-      if (!res.positions.error) {
-        dispatch(updatePositions(res.positions));
+      else {
+        dispatch(setError(res.message));
       }
     });
   };

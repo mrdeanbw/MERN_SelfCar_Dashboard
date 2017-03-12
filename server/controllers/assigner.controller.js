@@ -13,7 +13,7 @@ export function getProjects(req, res) {
         password: account.password
       }
       getAuthToken(credentials).then(token => {
-        console.log(token);
+        //console.log(token);
         request(projectsUrl, {'Authorization' : token}).then(response => {
           // TODO: handle multiple accounts, currently return projects of first account only.
           //console.log(response);
@@ -41,13 +41,11 @@ export function postProjects(req, res) {
       getAuthToken(credentials).then(token => {
         console.log(req.body);
         request(submitUrl, {'Authorization' : token}, 'post' , {projects: req.body}).then(response => {
-          request(submitUrl + "/" + response.id + "/waits.json", {'Authorization' : token}).then(responsePositions => {
-            console.log(responsePositions);
-            res.status(200).json({
-              success: true,
-              submission: response,
-              positions: responsePositions
-            });
+          console.log(response);
+          res.status(200).json({
+            success: response.error ? false : true,
+            submission: response.error ? {} : response,
+            message: response.error || ""
           });
         });
       })
@@ -93,10 +91,10 @@ export function getSubmission(req, res) {
         //console.log(token);
         request(listSubmissionsUrl, {'Authorization' : token}).then(response => {
           // TODO: handle multiple accounts, currently return projects of first account only.
-          //console.log(response);
+          console.log(response);
           res.status(200).json({
             success: true,
-            submission: response[0]
+            submission: response[0] || {}
           });
         });
       })
