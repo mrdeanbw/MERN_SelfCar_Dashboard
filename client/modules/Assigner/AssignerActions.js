@@ -57,6 +57,32 @@ export function postSubmissions(projects) {
   };
 }
 
+export function cancelSubmission(submissionId) {
+  return (dispatch) => {
+    return callApi('projects/cancel/' + submissionId, 'get').then(res => {
+      if (res.success) {
+        dispatch(updateSubmission({}));
+        dispatch(updatePositions([]));
+      }
+      else {
+        dispatch(setError(res.message));
+      }
+    });
+  };
+}
+
+export function notifyAssignedProject(projectId) {
+  return (dispatch) => {
+    return callApi('projects/notify/' + projectId, 'get').then(res => {
+      if (res.success) {
+      }
+      else {
+        dispatch(setError(res.message));
+      }
+    });
+  };
+}
+
 export function fetchSubmission() {
   return (dispatch) => {
     return callApi('projects/submission').then(res => {

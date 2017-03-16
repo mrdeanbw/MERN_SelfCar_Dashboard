@@ -2,6 +2,7 @@ import Assigner from '../models/assigner';
 import request from '../util/request';
 import { projectsUrl, submitUrl, listSubmissionsUrl } from '../util/udacityHelpers';
 import { getAuthToken } from '../util/request';
+import {sendMail} from '../util/mailer';
 
 export function getProjects(req, res) {
   // Get the udacity account token
@@ -64,7 +65,7 @@ export function getPositions(req, res) {
         password: account.password
       }
       getAuthToken(credentials).then(token => {
-        console.log(req.params.submissionId);
+        //console.log(token);
         request(submitUrl + "/" + req.params.submissionId + "/waits.json", {'Authorization' : token}).then(response => {
           console.log(response);
           res.status(200).json({
@@ -100,5 +101,45 @@ export function getSubmission(req, res) {
       })
     }, this);
   })
+  
+}
+
+export function cancel(req, res) {
+  // Get the udacity account token
+  req.user.populate('accounts', (err, user) => {
+    user.accounts.forEach(function(account) {
+      //console.log(account);
+      var credentials = {
+        email: account.email,
+        password: account.password
+      }
+      getAuthToken(credentials).then(token => {
+        console.log('Cancelling project...');
+        request(submitUrl + "/" + req.params.submissionId + ".json", {'Authorization' : token}, 'delete').then(response => {
+          console.log(response);
+          res.status(200).json({
+            success: true,
+          });
+        });
+      })
+    }, this);
+  })
+  
+}
+
+export function notify(req, res) {
+  // Email the user
+  // req.user
+  // req.params.projectId
+  let mailOptions = {
+    to: req.user.email,
+    subject: 'Project Assigned: ' + req.params.projectId, // Subject line
+    text: 'Dear ' + req.user.name + ', \n Project with id ' + req.params.projectId + ' has been assigned to you!', // plain text body
+  };
+  sendMail(mailOptions, (error, info) => {
+      res.status(200).json({
+        success: error ? false : true,
+      });
+  });
   
 }

@@ -12,7 +12,7 @@ import FlatButton from 'material-ui/FlatButton';
 import styles from './Assigner.css';
 
 // Import Actions
-import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions, setError } from './AssignerActions';
+import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions, setError, cancelSubmission, notifyAssignedProject } from './AssignerActions';
 
 // Import Selectors
 import { getProjects, getPositions, getSelectedProjects, getSubmission, getError } from './AssignerReducer';
@@ -52,6 +52,9 @@ class Assigner extends Component {
   }
 
   startPollingPositions = (submissionId) => {
+    if (!this.pollingStarted) {
+      return;
+    }
     console.log("Starting to poll!");
     console.log(submissionId);
     this.props.dispatch(fetchPositions(submissionId));
@@ -61,8 +64,8 @@ class Assigner extends Component {
   componentWillReceiveProps(nextProps) {
     // Fetch positions if we have a current submission
     if (!this.pollingStarted && nextProps.currentSubmission && nextProps.currentSubmission.id) {
-      this.startPollingPositions(nextProps.currentSubmission.id);
       this.pollingStarted = true;
+      this.startPollingPositions(nextProps.currentSubmission.id);
     }
   }
 
@@ -74,6 +77,16 @@ class Assigner extends Component {
     this.props.dispatch(postSubmissions(selectedProjects.map(value => {
       return {project_id: value.project_id, language: 'en-us'};
     })));
+  }
+
+  handleCancelSubmission = (submissionId) => {
+    this.pollingStarted = false;
+    this.props.dispatch(cancelSubmission(submissionId));
+  }
+
+  handleProjectAssigned = (projectId) => {
+    // send email to user with the project projectId
+    this.props.dispatch(notifyAssignedProject(projectId));
   }
 
   renderChip(data) {
@@ -119,9 +132,12 @@ class Assigner extends Component {
             <RaisedButton primary={true} label="Start"
                 onClick={() => this.handlePostSubmissions(this.props.selectedProjects)}
                 disabled={this.props.selectedProjects.length == 0 || this.props.currentSubmission.id}  style={this.styles.startButton} />
+            <RaisedButton primary={true} label="Cancel"
+                onClick={() => this.handleCancelSubmission(this.props.currentSubmission.id)}
+                disabled={!this.props.currentSubmission.id}  style={this.styles.startButton} />
           </CardActions>
         </Card>
-        <QueueList queues={this.props.positions} />
+        <QueueList queues={this.props.positions} handleProjectAssigned={this.handleProjectAssigned} />
         <Dialog
           title="API Error"
           actions={actions}
@@ -157,7 +173,8 @@ Assigner.propTypes = {
   dispatch: PropTypes.func.isRequired,
   positions: PropTypes.array.isRequired,
   currentSubmission: PropTypes.object.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
+  handleProjectAssigned: PropTypes.func.isRequired,
 };
 
 Assigner.contextTypes = {

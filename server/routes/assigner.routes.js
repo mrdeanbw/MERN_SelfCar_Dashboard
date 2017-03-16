@@ -15,4 +15,10 @@ router.route('/projects/positions/:submissionId').get(AssignerController.getPosi
 // Get submission
 router.route('/projects/submission').get(AssignerController.getSubmission);
 
+// Cancel submission 
+router.route('/projects/cancel/:submissionId').get(AssignerController.cancel);
+
+// Notify user of assigned project 
+router.route('/projects/notify/:projectId').get(AssignerController.notify);
+
 export default router;

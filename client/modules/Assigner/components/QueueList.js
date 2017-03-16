@@ -11,6 +11,7 @@ function QueueList(props) {
         props.queues.map(queue => (
           <QueueListItem
             queue={queue}
+            handleProjectAssigned={this.handleProjectAssigned}
           />
         ))
       }
@@ -20,6 +21,7 @@ function QueueList(props) {
 
 QueueList.propTypes = {
   queues: PropTypes.array.isRequired,
+  handleProjectAssigned: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
