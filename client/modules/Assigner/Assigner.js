@@ -7,6 +7,7 @@ import Chip from 'material-ui/Chip';
 import QueueList from './components/QueueList';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
 // Import Style
 import styles from './Assigner.css';
@@ -150,6 +151,15 @@ class Assigner extends Component {
                 disabled={!this.props.currentSubmission.id}  style={this.styles.startButton} />
           </CardActions>
         </Card>
+        <Toolbar>
+          <ToolbarGroup firstChild={true}>
+            <ToolbarTitle text={"Queuing Status: " + (this.pollingStarted ? "Started" : "Stopped")} />
+          </ToolbarGroup>
+          <ToolbarSeparator />
+          <ToolbarGroup>
+            <ToolbarTitle text={"Submission Status: " + (this.props.currentSubmission.status ? this.props.currentSubmission.status : "No Submission")} />
+          </ToolbarGroup>
+        </Toolbar>
         <QueueList queues={this.props.positions} handleProjectAssigned={this.handleProjectAssigned} />
         <Dialog
           title="API Error"
