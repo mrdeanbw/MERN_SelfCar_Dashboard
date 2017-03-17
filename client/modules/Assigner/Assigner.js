@@ -157,7 +157,11 @@ class Assigner extends Component {
           </ToolbarGroup>
           <ToolbarSeparator />
           <ToolbarGroup>
-            <ToolbarTitle text={"Submission Status: " + (this.props.currentSubmission.status ? this.props.currentSubmission.status : "No Submission")} />
+            <ToolbarTitle text={"Next Refresh: " + (this.props.currentSubmission.closed_at ? this.props.currentSubmission.closed_at : "No Submission Yet!")} />
+          </ToolbarGroup>
+          <ToolbarSeparator />
+          <ToolbarGroup>
+            <ToolbarTitle text={"Submission Status: " + (this.props.currentSubmission.status ? this.props.currentSubmission.status : "No Submission Yet!")} />
           </ToolbarGroup>
         </Toolbar>
         <QueueList queues={this.props.positions} handleProjectAssigned={this.handleProjectAssigned} />
