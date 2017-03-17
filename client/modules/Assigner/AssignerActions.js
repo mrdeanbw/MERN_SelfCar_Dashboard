@@ -105,3 +105,13 @@ export function fetchPositions(submissionId) {
     });
   };
 }
+
+export function refreshSubmission(submissionId) {
+  return (dispatch) => {
+    return callApi('projects/refresh/' + submissionId, 'get').then(res => {
+      if(res.success) {
+        dispatch(updateSubmission(res.submission));
+      }
+    });
+  };
+}

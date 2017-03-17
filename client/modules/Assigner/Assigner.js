@@ -12,7 +12,7 @@ import FlatButton from 'material-ui/FlatButton';
 import styles from './Assigner.css';
 
 // Import Actions
-import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions, setError, cancelSubmission, notifyAssignedProject } from './AssignerActions';
+import { fetchProjects, toggleProject, postSubmissions, fetchSubmission, fetchPositions, setError, cancelSubmission, notifyAssignedProject, refreshSubmission } from './AssignerActions';
 
 // Import Selectors
 import { getProjects, getPositions, getSelectedProjects, getSubmission, getError } from './AssignerReducer';
@@ -61,11 +61,24 @@ class Assigner extends Component {
     setTimeout(() => this.startPollingPositions(submissionId), 120000);
   }
 
+  startRefreshSubmission = (submission, timeout) => {
+    if (!this.pollingStarted) {
+      return;
+    }
+    console.log("Starting Refresh!");
+    this.props.dispatch(refreshSubmission(submission.id));
+    setTimeout(() => this.startRefreshSubmission(submission, timeout), timeout);
+  }
+
   componentWillReceiveProps(nextProps) {
     // Fetch positions if we have a current submission
     if (!this.pollingStarted && nextProps.currentSubmission && nextProps.currentSubmission.id) {
       this.pollingStarted = true;
       this.startPollingPositions(nextProps.currentSubmission.id);
+      // Set timer for refresh
+      let endsAt = new Date(nextProps.currentSubmission.closed_at);
+      let timeout = endsAt.getTime() - Date.now() - 300000; // minus 5 minutes
+      this.startRefreshSubmission(nextProps.currentSubmission, timeout);
     }
   }
 

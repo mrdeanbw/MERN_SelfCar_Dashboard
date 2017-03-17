@@ -143,3 +143,28 @@ export function notify(req, res) {
   });
   
 }
+
+export function refresh(req, res) {
+  // Get the udacity account token
+  req.user.populate('accounts', (err, user) => {
+    user.accounts.forEach(function(account) {
+      //console.log(account);
+      var credentials = {
+        email: account.email,
+        password: account.password
+      }
+      getAuthToken(credentials).then(token => {
+        console.log('Refreshing project...');
+        request(submitUrl + "/" + req.params.submissionId + "/refresh.json", {'Authorization' : token}, 'put').then(response => {
+          console.log(response);
+          res.status(200).json({
+            success: response.error ? false : true,
+            submission: response.error ? {} : response,
+            message: response.error || ""
+          });
+        });
+      })
+    }, this);
+  })
+  
+}

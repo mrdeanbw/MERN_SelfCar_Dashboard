@@ -21,4 +21,7 @@ router.route('/projects/cancel/:submissionId').get(AssignerController.cancel);
 // Notify user of assigned project 
 router.route('/projects/notify/:projectId').get(AssignerController.notify);
 
+// Refresh submission 
+router.route('/projects/refresh/:submissionId').get(AssignerController.refresh);
+
 export default router;
