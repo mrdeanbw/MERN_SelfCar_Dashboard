@@ -13,11 +13,16 @@ export function getProjects(req, res) {
         email: account.email,
         password: account.password
       }
+      console.log("get projects credentials");
       getAuthToken(credentials).then(token => {
         //console.log(token);
+        //console.log(credential.email);
+        //console.log(credentials.password);
+        console.log("token");
+        console.log(token);
         request(projectsUrl, {'Authorization' : token}).then(response => {
           // TODO: handle multiple accounts, currently return projects of first account only.
-          //console.log(response);
+         // console.log(response);
           res.status(200).json({
             success: true,
             projects: response
@@ -34,7 +39,7 @@ export function postProjects(req, res) {
   // Get the udacity account token
   req.user.populate('accounts', (err, user) => {
     user.accounts.forEach(function(account) {
-      console.log(account);
+      //console.log(account);
       var credentials = {
         email: account.email,
         password: account.password
@@ -42,7 +47,7 @@ export function postProjects(req, res) {
       getAuthToken(credentials).then(token => {
         console.log(req.body);
         request(submitUrl, {'Authorization' : token}, 'post' , {projects: req.body}).then(response => {
-          console.log(response);
+         // console.log(response);
           res.status(200).json({
             success: response.error ? false : true,
             submission: response.error ? {} : response,
@@ -64,6 +69,7 @@ export function getPositions(req, res) {
         email: account.email,
         password: account.password
       }
+
       getAuthToken(credentials).then(token => {
         //console.log(token);
         request(submitUrl + "/" + req.params.submissionId + "/waits.json", {'Authorization' : token}).then(response => {

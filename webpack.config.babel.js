@@ -8,6 +8,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = {
+  node: {
+    console: false,
+    fs:'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
   output: {
     publicPath: '/',
     libraryTarget: 'commonjs2',

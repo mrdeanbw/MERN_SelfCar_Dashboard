@@ -11,12 +11,17 @@ var CommonHeaders = { 'content-type': 'application/json' };
 
 export default function callApi(endpoint, method = 'get', body) {
   //console.log(CommonHeaders);
+
+  console.log(body);
   return fetch(`${API_URL}/${endpoint}`, {
     headers: CommonHeaders,
     method,
     body: JSON.stringify(body),
   })
   .then(response => {
+    console.log("project response!");
+    console.log(response);
+    console.log("project response!!");
     return response.json().then(json => ({ json, response }));
   })
   .then(({ json, response }) => {

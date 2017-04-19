@@ -5,6 +5,12 @@ var postcssReporter = require('postcss-reporter');
 import autoprefixer from 'autoprefixer';
 
 module.exports = {
+  node: {
+    console: false,
+    fs:'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
   devtool: 'cheap-module-eval-source-map',
 
   entry: {

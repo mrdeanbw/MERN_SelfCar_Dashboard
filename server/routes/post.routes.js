@@ -15,3 +15,5 @@ router.route('/posts').post(PostController.addPost);
 router.route('/posts/:cuid').delete(PostController.deletePost);
 
 export default router;
+
+

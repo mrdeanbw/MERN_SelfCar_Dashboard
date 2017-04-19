@@ -12,11 +12,25 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 
 const data = {
   menus: [
-    { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
-    { text: 'Users', icon: <PermIdentity/>, link: '/users' },
-    { text: 'Accounts', icon: <AccountBox/>, link: '/accounts' },
-    { text: 'Assigners', icon: <ActionAssignment/>, link: '/assigners' }
+    { text: 'DashBoard', icon: <Assessment/>,   link: '/dashboard' },
+    { text: 'Users', icon: <PermIdentity/>,     link: '/users' },
+    { text: 'Accounts', icon: <AccountBox/>,    link: '/accounts' },
+    { text: 'Assigners', icon: <ActionAssignment/>, link: '/assigners' },
+    { text: 'Mentorship', icon: <ActionAssignment/>, link: 'mentorship' }
   ],
+
+   TeacherTabs : [
+    { name: 'Kenneth',  fullName : 'Kenneth Au',   link: 'mentorship' , email : "kennethau82@gmail.com",    passWord : "UdacityForever",  guru_uid : 'u7542228' },
+    { name: 'Ralph',    fullName : 'Ralph Tigoumo',   link: 'mentorship' , email : "ralphwantek@gmail.com",    passWord : "qy3QxateOkC3eDp", guru_uid : '666518750'},
+    { name: 'Hamza',    fullName : 'Hamza Zia',   link: 'mentorship' , email : "ziahamza.ust@gmail.com",   passWord : "jIdJuyticRTUOmt", guru_uid : 'u30392994'},
+    { name: 'Olivia',   fullName : 'Olivia Natacha',   link: 'mentorship' , email : "natoueolivia@yahoo.fr",    passWord : "o123456789", guru_uid : '8784850534'},
+    { name: 'Baris',    fullName : 'Baris Karaagac',   link: 'mentorship' , email : "baris.k.005@gmail.com",    passWord : "CityU2011",  guru_uid : '9686232401'},
+    { name: 'Rodrigo',  fullName : 'Rodrigo Bittarr',   link: 'mentorship' , email : "rodrigo_bittarr@hotmail.com", passWord : "secret",  guru_uid : '9709110714'},
+    { name: 'Edmund',   fullName : 'Edmund Yang',   link: 'mentorship' , email : "edmundhaoyang@gmail.com",  passWord : "123456789",  guru_uid : '8654209222'},
+    { name: 'Talha',    fullName : 'Talha Mahmood',   link: 'mentorship' , email : "tiankoint@gmail.com",      passWord : "Meem2004",   guru_uid : '3474298831'},
+    { name: 'Reza',     fullName : 'Reza Chu',  link: 'mentorship' , email : "rezachu@gmail.com",      passWord : "ml252xsdc",   guru_uid : '8407107133'},
+  ],
+
   tablePage: {
     items: [
       {id: 1, name: 'Product 1', price: '$50.00', category: 'Category 1'},
@@ -29,6 +43,7 @@ const data = {
       {id: 8, name: 'Product 8', price: '$750.00', category: 'Category 8'}
     ]
   },
+  
   dashBoardPage: {
     recentProducts: [
       {id: 1, title: 'Samsung TV', text: 'Samsung 32 1080p 60Hz LED Smart HDTV.'},

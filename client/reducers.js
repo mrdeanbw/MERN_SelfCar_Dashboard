@@ -12,6 +12,7 @@ import users from './modules/User/UserReducer';
 import roles from './modules/Role/RoleReducer';
 import accounts from './modules/Account/AccountReducer';
 import assigners from './modules/Assigner/AssignerReducer';
+import mentorship from './modules/Mentorship/MentorshipReducer';
 
 // Combine all reducers into one root reducer
 export default combineReducers({
@@ -22,5 +23,6 @@ export default combineReducers({
   auth,
   roles,
   accounts,
-  assigners
+  assigners,
+  mentorship
 });

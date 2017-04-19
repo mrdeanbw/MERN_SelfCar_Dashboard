@@ -9,7 +9,12 @@ var cssnano = require('cssnano');
 
 module.exports = {
   devtool: 'hidden-source-map',
-
+  node: {
+    console: false,
+    fs:'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
   entry: {
     app: [
       './client/index.js',
