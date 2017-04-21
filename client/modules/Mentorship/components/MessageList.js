@@ -4,7 +4,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ThemeDefault from '../../../theme-default';
 import {Grid, Row, Col} from 'react-bootstrap';
+
 import CircularProgress from 'material-ui/CircularProgress';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import request from '../../../../server/util/requestApi';
 import { connect } from 'react-redux';
@@ -13,6 +18,7 @@ import $ from 'jquery';
 
 import { getSessionToken, getSelectedTeacherID } from '../MentorshipReducer';
 import Data from '../../../data';
+import css from '../style/MessageList.css';
 
 class MessageList extends React.Component {
 
@@ -21,17 +27,15 @@ class MessageList extends React.Component {
     this.state = {
       messageList : null,
       messageText  : '',
-      isConversationsLodded: false,
+      isConversationsLoaded: '0', // 0 : initial,  1 : loadding, 2 : loaded 
     };
 
     this.sendMessage = this.sendMessage.bind(this);
+    this.deleteMessage = this.deleteMessage.bind(this);
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
     this.generateWordTag = this.generateWordTag.bind(this);
+
     
-  }
-
-  componentWillMount() {
-
   }
 
   componentDidMount(){
@@ -39,8 +43,9 @@ class MessageList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-
-      this.setState({isConversationsLodded : false});
+    if ( this.props.messageUrl != nextProps.messageUrl ) {
+      this.setState({ isConversationsLoaded : '1' });
+    
       var settings = {
         "async": true,
         "crossDomain": true,
@@ -56,9 +61,11 @@ class MessageList extends React.Component {
 
       $.ajax(settings).done(function (response) {
         this.setState({messageList: response});
-        this.setState({isConversationsLodded : true});
+        this.setState({ isConversationsLoaded : '2' });
         console.log(response);
       }.bind(this));
+
+    }
   }
 
   _handleTextFieldChange(e){
@@ -105,33 +112,52 @@ class MessageList extends React.Component {
     }.bind(this));
  }
 
- generateWordTag(message)
+ deleteMessage(messageUrlToDelete, messageIndexToDelete){
+    var _this = this;
+    var settings = {
+      "url": messageUrlToDelete + '?mode=all_participants',
+      "method": "DELETE",
+      "headers": {
+        "accept": "application/vnd.layer+json; version=1.0",
+        "authorization": 'Layer session-token="'+ this.props.sessionToken +'"',
+        "content-type": "application/json",
+      }
+    }
+
+    $.ajax(settings).done(function (response) {     
+      _this.setState((prevState,props)=>{
+        messageList :  prevState.messageList.splice(messageIndexToDelete,1);
+      })  
+      //console.log(_this.state.messageList);  
+    });
+ }
+
+ generateWordTag(message, messageIndex)
  {  
    let _this = this ;
+   var messagestyle;
     return Object.keys(message.parts).map(function(k, index){
     
-      if (message.sender.user_id== Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid ){
-           
-         var messagestyle = {   'borderRadius' : '7px',
-                                "color"        : "white",
-                                'background'   : '#02b3e4',
-                                'padding'      : '20px', 
-                                'maxWidth'     : '45%',
-                                'marginLeft'   : '750px',                              
-                            }
-        }
-      else {
-         var messagestyle = {   'borderRadius' : '7px',
-                                "color"        : "black",
-                                'background'   : '#e0c8c8',
-                                'padding'      : '20px', 
-                                'maxWidth'     : '45%',
-                                'marginLeft'   : '40px',          
-                            }
-      }
+      if (message.sender.user_id== Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid )
+          messagestyle = css.message_blue;
+        else 
+          messagestyle = css.message_red;
+ 
       return (
               <div key={index}>
-                  <p style={messagestyle}> {message.parts[k].body} </p>
+                  <div>
+                      <IconMenu
+                        iconButtonElement={<p className={messagestyle}> {message.parts[k].body} </p>}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                      >
+                        <MenuItem primaryText="Delete Message" onClick={() => _this.deleteMessage(message.url, messageIndex)}/>
+                      </IconMenu>
+                  </div>       
+                  <div> 
+                    {message.sent_at} 
+                    <hr/>
+                  </div>
               </div>
              );
     });
@@ -143,8 +169,9 @@ class MessageList extends React.Component {
    return (
         <Grid fluid={true} style={{width:'100%', height:'100%' }}>
 
-            {this.state.isConversationsLodded == false
-              ? <MuiThemeProvider>
+            {this.state.isConversationsLoaded == '1'
+              ?
+                <MuiThemeProvider>
                   <CircularProgress
                     size={50}
                     thickness={3}
@@ -154,12 +181,15 @@ class MessageList extends React.Component {
                   }}/>
                 </MuiThemeProvider>
                 :
-               <div style={{width:'100%', height:'100%' }}>
+                this.state.isConversationsLoaded == '2' ?
+              <div style={{width:'100%', height:'100%' }}>
                 <div style={{width:'100%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
+                    
                     {
-                      //_this.state.messageList &&
-                      _this.state.messageList.map((message) =>
-                          this.generateWordTag(message)
+        
+                      //this.state.messageList &&
+                      this.state.messageList.map((message, index) =>
+                          this.generateWordTag(message, index)
                       ).reverse()
                     }
                 </div>           
@@ -179,12 +209,13 @@ class MessageList extends React.Component {
                   </Row>
                 </div>
               </div>
+              :
+              null
             }
         </Grid>
     );
   }
 }
-
 
 const mapStateToProps = (state) => {
   return {

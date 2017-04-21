@@ -45,17 +45,18 @@ class StuDrawer extends React.Component {
     this.state = {
       open: true,
       studentsItems: this.props.stuDrawerItems,
-      isStudentsLodded: this.props.isStudentsLodded,
+      isStudentsLoaded: this.props.isStudentsLoaded,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.stuDrawerItems != this.state.studentsItems) {
+    if ( this.state.studentsItems != nextProps.stuDrawerItems ) {
       this.setState({studentsItems: nextProps.stuDrawerItems});
-      this.setState({ isStudentsLodded: true});
+      //this.setState({ isStudentsLoaded: true});
+      //this.setState({ isStudentsLoaded: false });
     }
-    if (this.state.isStudentsLodded != nextProps.isStudentsLodded){
-      this.setState({ isStudentsLodded : nextProps.isStudentsLodded });
+    if (this.state.isStudentsLoaded != nextProps.isStudentsLoaded){
+      this.setState({ isStudentsLoaded : nextProps.isStudentsLoaded });
     }
   }
 
@@ -79,10 +80,17 @@ class StuDrawer extends React.Component {
             backgroundColor: '#1c262f',
             color: 'white'
           }}>
-            Self-Driving Car Engineer Nanodegree
+
+              Self-Driving Car Engineer Nanodegree  <br/>
+              { this.state.isStudentsLoaded == '2'
+                ?   <span style={{marginLeft : '30%' }}>{Object.keys(this.state.studentsItems).length + '  students'}</span>
+                :
+                    null
+              }
+              
           </MenuItem>
 
-          {this.state.isStudentsLodded == false
+          {this.state.isStudentsLoaded == '1'
             ? <MuiThemeProvider>
                 <CircularProgress
                   size={60}

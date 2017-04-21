@@ -8,7 +8,7 @@ import {Grid, Row, Col} from 'react-bootstrap';
 import Data from '../../../data';
 
 import { selectTeacher } from '../MentorshipActions';
-import {getSelectedTeacherID} from '../MentorshipReducer';
+import { getSelectedTeacherID } from '../MentorshipReducer';
 import { connect } from 'react-redux';
 
 class TeacherTabs extends React.Component {
@@ -18,10 +18,9 @@ class TeacherTabs extends React.Component {
       open: true,
     }; 
     this.handleActive = this.handleActive.bind(this);
-    
   }
   handleActive(tab) {
-    //console.log(tab.props.index);
+    console.log(tab.props.index);
     this.props.dispatch(selectTeacher(tab.props.index));
   }
   render(){
@@ -40,7 +39,6 @@ class TeacherTabs extends React.Component {
     );
   }
 }
-
 
 function select(state) {
   return {selectedTeacherID: getSelectedTeacherID(state)}

@@ -110,7 +110,7 @@ class Assigner extends Component {
         style={data.selected ? this.styles.selectedchip : this.styles.chip}
         labelColor={data.selected ? '#FF0000' : '#FF0000'}
         //labelColor={data.selected ? '#FFFFFF' : '#000000'}
-        onTouchTap={() => this.handleToggleProject(data.project_id)}
+        onClick={() => this.handleToggleProject(data.project_id)}
       >
         {data.project_id}
       </Chip>

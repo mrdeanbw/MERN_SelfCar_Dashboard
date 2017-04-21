@@ -43,11 +43,11 @@ class MentorshipPage extends React.Component {
         students : {},
 
         selectedStudentID: '',
-        selectedTeacherID: '0',
+        selectedTeacherID: '-1',
         selectedConversationId :'',
         selectedMessageurl : '',
         auth_token : '',
-        isStudentsLodded : false,
+        isStudentsLoaded : '0',  // 0 : initial,  1 : loadding, 2 : loaded 
         
         conversations: '',
         messageItems : {},
@@ -72,11 +72,14 @@ class MentorshipPage extends React.Component {
 
   componentWillReceiveProps(nextProps){
     let _this = this;
+        console.log(this.state.selectedTeacherID);
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
+
+         console.log("teacher updated!");
           if (this.state.selectedTeacherID != nextProps.selectedTeacherID) 
             { 
-              this.setState({ isStudentsLodded : false });
+              this.setState({ isStudentsLoaded : '1' });
               this.setState({ selectedTeacherID : nextProps.selectedTeacherID });
               var settings = {                
                 "url": "https://hoth.udacity.com/v2/authenticate",
@@ -104,7 +107,7 @@ class MentorshipPage extends React.Component {
 
                   $.ajax(settings).done(function (res) {
                       _this.setState({ students : res.students });
-                    // _this.setState({isStudentsLodded : true});
+                      _this.setState({isStudentsLoaded : '2'});
                       _this.fetchConversations(nextProps.selectedTeacherID);
                       console.log(_this.state.students);
                   });
@@ -166,7 +169,7 @@ class MentorshipPage extends React.Component {
                         'authorization' : 'Layer session-token="' +   res.session_token + '"' },
         })
     .done(function(res){
-       _this.setState({isStudentsLodded : true});
+        //_this.setState({isStudentsLoaded : true});
         _this.setState({conversations : res });
       })
      })
@@ -222,7 +225,7 @@ class MentorshipPage extends React.Component {
               </div>
 
               <div style={{width:'300px', height:'100%', display:'inline-block'}}>
-                  <StuDrawer isStudentsLodded = {this.state.isStudentsLodded} stuDrawerItems={this.state.students}/>
+                  <StuDrawer isStudentsLoaded = {this.state.isStudentsLoaded} stuDrawerItems={this.state.students}/>
               </div>
 
               <div style={{position:'absolute', left:350, top:0, width:'calc(100% - 350px)', height:'100%', display:'inline-block'}}>

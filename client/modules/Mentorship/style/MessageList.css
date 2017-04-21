@@ -1,0 +1,35 @@
+.message_red {
+    background-color :rgb(224, 200, 200) !important;
+    border-radius : 7px;
+    color        : black;
+    padding        : 20px;
+    max-width     : 45%;
+    margin-left   : 40px; 
+}
+
+.message_red:hover {
+    background-color:rgb(240, 224, 224) !important;
+    border-radius : 7px;
+    color        : black;
+    padding        : 20px;
+    max-width     : 45%;
+    margin-left   : 40px;    
+}
+
+.message_blue {
+    background-color :rgb(2, 179, 228) !important;
+    border-radius : 7px;
+    color         : white;
+    padding       : 20px; 
+    max-width     : 45%;
+    margin-left   : 750px;   
+}
+
+.message_blue:hover {
+    background-color:rgb(100, 240, 248) !important;
+    border-radius : 7px;
+    color         : white;
+    padding       : 20px; 
+    max-width     : 45%;
+    margin-left   : 750px;
+}
