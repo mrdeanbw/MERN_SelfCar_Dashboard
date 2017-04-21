@@ -16,6 +16,10 @@ export function getProjects(req, res) {
       console.log("get projects credentials");
       getAuthToken(credentials).then(token => {
         //console.log(token);
+        //console.log(credential.email);
+        //console.log(credentials.password);
+        console.log("token");
+        console.log(token);
         request(projectsUrl, {'Authorization' : token}).then(response => {
           // TODO: handle multiple accounts, currently return projects of first account only.
          // console.log(response);

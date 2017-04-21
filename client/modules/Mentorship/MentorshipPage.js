@@ -73,6 +73,7 @@ class MentorshipPage extends React.Component {
   componentWillReceiveProps(nextProps){
     let _this = this;
         console.log(this.state.selectedTeacherID);
+        console.log(nextProps.selectedTeacherID);
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
 
@@ -135,8 +136,8 @@ class MentorshipPage extends React.Component {
     headers : { Accept : "application/vnd.layer+json; version=1.0" }
   })
   .done(function( res ) {
-        console.log(_this.state.auth_token);
-        console.log(Data.TeacherTabs[selectedTeacherID].guru_uid);
+        //console.log(_this.state.auth_token);
+        //console.log(Data.TeacherTabs[selectedTeacherID].guru_uid);
 
         $.ajax({
           method: "POST",

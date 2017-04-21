@@ -55,14 +55,13 @@ class MessageList extends React.Component {
           "accept": "application/vnd.layer+json; version=1.0",
           "content-type": "application/json;charset=UTF-8",
           "authorization": 'Layer session-token="'+ nextProps.sessionToken +'"',
-          "cache-control": "no-cache",
         }
       }
 
       $.ajax(settings).done(function (response) {
         this.setState({messageList: response});
         this.setState({ isConversationsLoaded : '2' });
-        console.log(response);
+        //console.log(response);
       }.bind(this));
 
     }
