@@ -3,7 +3,7 @@
     border-radius : 7px;
     color        : black;
     padding        : 20px;
-    max-width     : 45%;
+    max-width     : 100%;
     margin-left   : 40px; 
 }
 
@@ -12,7 +12,7 @@
     border-radius : 7px;
     color        : black;
     padding        : 20px;
-    max-width     : 45%;
+    max-width     : 100%;
     margin-left   : 40px;    
 }
 
@@ -20,16 +20,20 @@
     background-color :rgb(2, 179, 228) !important;
     border-radius : 7px;
     color         : white;
-    padding       : 20px; 
-    max-width     : 45%;
-    margin-left   : 750px;   
+    padding       : 20px;
+    
+    /*max-width     : 45%;*/
+    max-width     : 100%;
+    margin-left   : 40px;   
+    /*margin-left   : 750px;   */
 }
 
-.message_blue:hover {
+/*.message_blue:hover {
     background-color:rgb(100, 240, 248) !important;
     border-radius : 7px;
     color         : white;
     padding       : 20px; 
-    max-width     : 45%;
-    margin-left   : 750px;
-}
+    max-width     : 100%;
+    margin-left   : 40px;
+    
+}*/

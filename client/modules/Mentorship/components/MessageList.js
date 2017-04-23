@@ -33,9 +33,7 @@ class MessageList extends React.Component {
     this.sendMessage = this.sendMessage.bind(this);
     this.deleteMessage = this.deleteMessage.bind(this);
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
-    this.generateWordTag = this.generateWordTag.bind(this);
-
-    
+    this.generateWordTag = this.generateWordTag.bind(this);    
   }
 
   componentDidMount(){
@@ -47,8 +45,6 @@ class MessageList extends React.Component {
       this.setState({ isConversationsLoaded : '1' });
     
       var settings = {
-        "async": true,
-        "crossDomain": true,
         "url": nextProps.messageUrl,
         "method": "GET",
         "headers": {
@@ -57,20 +53,18 @@ class MessageList extends React.Component {
           "authorization": 'Layer session-token="'+ nextProps.sessionToken +'"',
         }
       }
-
       $.ajax(settings).done(function (response) {
         this.setState({messageList: response});
         this.setState({ isConversationsLoaded : '2' });
         //console.log(response);
       }.bind(this));
-
     }
   }
 
   _handleTextFieldChange(e){
-      
       this.setState({ messageText : e.target.value });
   }
+
  sendMessage(){
    if (!this.state.messageText)   return ;  
       //console.log(this.state.messageText);
@@ -131,20 +125,19 @@ class MessageList extends React.Component {
     });
  }
 
- generateWordTag(message, messageIndex)
- {  
+ generateWordTag(message, messageIndex){
    let _this = this ;
    var messagestyle;
     return Object.keys(message.parts).map(function(k, index){
     
-      if (message.sender.user_id== Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid )
+      if (message.sender.user_id == Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid )
           messagestyle = css.message_blue;
         else 
           messagestyle = css.message_red;
  
       return (
               <div key={index}>
-                  <div>
+                  <div style={{ }}>
                       <IconMenu
                         iconButtonElement={<p className={messagestyle}> {message.parts[k].body} </p>}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -184,8 +177,7 @@ class MessageList extends React.Component {
               <div style={{width:'100%', height:'100%' }}>
                 <div style={{width:'100%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
                     
-                    {
-        
+                    {        
                       //this.state.messageList &&
                       this.state.messageList.map((message, index) =>
                           this.generateWordTag(message, index)

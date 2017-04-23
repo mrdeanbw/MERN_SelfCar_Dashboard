@@ -7,6 +7,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import {getSelectedStudentId} from '../MentorshipReducer';
 import CircularProgress from 'material-ui/CircularProgress';
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
+import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
+
 
 import Data from '../../../data';
 //===========    Redux   ===============
@@ -46,7 +50,11 @@ class StuDrawer extends React.Component {
       open: true,
       studentsItems: this.props.stuDrawerItems,
       isStudentsLoaded: this.props.isStudentsLoaded,
+      conversations  : this. props.conversations,
     };
+
+    this.getbadgeContent = this.getbadgeContent.bind(this);
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,11 +66,44 @@ class StuDrawer extends React.Component {
     if (this.state.isStudentsLoaded != nextProps.isStudentsLoaded){
       this.setState({ isStudentsLoaded : nextProps.isStudentsLoaded });
     }
+    if (this.state.conversations != nextProps.conversations){
+      this.setState({ conversations : nextProps.conversations });
+    }
   }
 
   handleToggle = () => this.setState({
     open: !this.state.open
   });
+  
+  
+  getbadgeContent = (studentID)=>{
+    let unread_message_count = 0;
+    console.log(this.state.conversations);
+    if (this.state.conversations.length > 0 ) { 
+      for (var conversation of this.state.conversations){
+        if  ((conversation.participants[1] == studentID) || (conversation.participants[0] == studentID) ){
+          unread_message_count = conversation.unread_message_count ;
+          //_this.setState({ selectedMessageurl : conversation.messages_url })
+   
+
+
+                    return (     
+                      unread_message_count > 0 ?
+                      <Badge
+                      badgeContent={ unread_message_count }
+                      primary={true}
+                      //badgeStyle={{top: 12, right: 12}}
+                      >     
+                      </Badge>
+                      :
+                      null
+                      );
+                 
+                      
+        }
+      }   
+    }
+  }
 
   render() {
     var handleMessageItems = this.props.handleMessageItems;
@@ -117,6 +158,8 @@ class StuDrawer extends React.Component {
                   }}
                     data-route="/dashboard">
                     {this.state.studentsItems[k].first_name + ' ' + this.state.studentsItems[k].last_name}
+                    {this.getbadgeContent(k)} 
+                   
                   </MenuItem>
                 : <MenuItem
                   key={k}

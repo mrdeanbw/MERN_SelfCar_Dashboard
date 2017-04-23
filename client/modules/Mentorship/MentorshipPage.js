@@ -172,6 +172,7 @@ class MentorshipPage extends React.Component {
     .done(function(res){
         //_this.setState({isStudentsLoaded : true});
         _this.setState({conversations : res });
+        console.log("Fetch Conversation OK!")
       })
      })
     })
@@ -182,7 +183,7 @@ class MentorshipPage extends React.Component {
       let messageurl = null;      
       // console.log(studentID);
       for (var conversation of conversations){
-        if (conversation.participants[1] == selectedStudentID ){
+        if  ((conversation.participants[1] == selectedStudentID) || (conversation.participants[0] == selectedStudentID) ){
           messageurl = conversation.messages_url ;
           _this.setState({ selectedMessageurl : conversation.messages_url })
           return messageurl;
@@ -226,7 +227,7 @@ class MentorshipPage extends React.Component {
               </div>
 
               <div style={{width:'300px', height:'100%', display:'inline-block'}}>
-                  <StuDrawer isStudentsLoaded = {this.state.isStudentsLoaded} stuDrawerItems={this.state.students}/>
+                  <StuDrawer isStudentsLoaded = {this.state.isStudentsLoaded} stuDrawerItems={this.state.students} conversations={this.state.conversations} />
               </div>
 
               <div style={{position:'absolute', left:350, top:0, width:'calc(100% - 350px)', height:'100%', display:'inline-block'}}>
