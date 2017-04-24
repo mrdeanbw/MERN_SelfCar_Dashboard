@@ -33,7 +33,8 @@ class MessageList extends React.Component {
     this.sendMessage = this.sendMessage.bind(this);
     this.deleteMessage = this.deleteMessage.bind(this);
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
-    this.generateWordTag = this.generateWordTag.bind(this);    
+    this.generateWordTag = this.generateWordTag.bind(this);   
+    this.removeBadge = this.removeBadge.bind(this) ;
   }
 
   componentDidMount(){
@@ -56,6 +57,8 @@ class MessageList extends React.Component {
       $.ajax(settings).done(function (response) {
         this.setState({messageList: response});
         this.setState({ isConversationsLoaded : '2' });
+        this.removeBadge(response);
+        
         //console.log(response);
       }.bind(this));
     }
@@ -65,6 +68,30 @@ class MessageList extends React.Component {
       this.setState({ messageText : e.target.value });
   }
 
+ removeBadge(messageList){
+   let _this = this;
+   for (let i = 0; i < messageList.length; i++ ){
+      Object.keys(messageList[i].recipient_status).forEach(function(key){
+        if (messageList[i].recipient_status[key] != "read" ){
+            let settings = {
+              "url": messageList[i].receipts_url,
+              "method": "POST",
+              "headers": {
+                "accept": "application/vnd.layer+json; version=1.0",
+                "authorization": 'Layer session-token="'+ _this.props.sessionToken +'"',
+                "content-type": "application/json",
+              },
+              "data" : JSON.stringify({
+                  "type" : "read"
+              })
+            }
+            $.ajax(settings).done(function (response) {
+              
+            }); 
+        }
+      });
+   }
+ }
  sendMessage(){
    if (!this.state.messageText)   return ;  
       //console.log(this.state.messageText);
@@ -127,17 +154,22 @@ class MessageList extends React.Component {
 
  generateWordTag(message, messageIndex){
    let _this = this ;
-   var messagestyle;
+   var messagestyle, messageDivStyle;
     return Object.keys(message.parts).map(function(k, index){
     
-      if (message.sender.user_id == Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid )
+      if (message.sender.user_id == Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid ){
           messagestyle = css.message_blue;
-        else 
+          messageDivStyle = css.message_div_blue;
+      }
+      else 
+      {
           messagestyle = css.message_red;
- 
+          messageDivStyle = css.message_div_red;
+      }
+          
       return (
-              <div key={index}>
-                  <div style={{ }}>
+              <div key={index} className={messageDivStyle}>
+                  <div>
                       <IconMenu
                         iconButtonElement={<p className={messagestyle}> {message.parts[k].body} </p>}
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}

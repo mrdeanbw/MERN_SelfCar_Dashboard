@@ -72,12 +72,12 @@ class MentorshipPage extends React.Component {
 
   componentWillReceiveProps(nextProps){
     let _this = this;
-        console.log(this.state.selectedTeacherID);
-        console.log(nextProps.selectedTeacherID);
+        //console.log(this.state.selectedTeacherID);
+        //console.log(nextProps.selectedTeacherID);
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
 
-         console.log("teacher updated!");
+         //console.log("teacher updated!");
           if (this.state.selectedTeacherID != nextProps.selectedTeacherID) 
             { 
               this.setState({ isStudentsLoaded : '1' });
@@ -110,7 +110,7 @@ class MentorshipPage extends React.Component {
                       _this.setState({ students : res.students });
                       _this.setState({isStudentsLoaded : '2'});
                       _this.fetchConversations(nextProps.selectedTeacherID);
-                      console.log(_this.state.students);
+                      //console.log(_this.state.students);
                   });
               });
             }   

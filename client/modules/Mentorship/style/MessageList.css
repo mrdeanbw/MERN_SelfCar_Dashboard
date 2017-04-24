@@ -1,10 +1,15 @@
+.message_div_red {
+    text-align: left;
+}
 .message_red {
     background-color :rgb(224, 200, 200) !important;
     border-radius : 7px;
     color        : black;
     padding        : 20px;
     max-width     : 100%;
-    margin-left   : 40px; 
+    margin-left: 0px;
+    margin-right: 30px;
+    text-align: left;
 }
 
 .message_red:hover {
@@ -13,27 +18,30 @@
     color        : black;
     padding        : 20px;
     max-width     : 100%;
-    margin-left   : 40px;    
+    margin-left : 0px; 
+    margin-right: 30px;
+    text-align: left;   
 }
-
+.message_div_blue {
+    text-align: right;
+    margin-right: 30px;
+}
 .message_blue {
     background-color :rgb(2, 179, 228) !important;
     border-radius : 7px;
     color         : white;
     padding       : 20px;
-    
-    /*max-width     : 45%;*/
     max-width     : 100%;
-    margin-left   : 40px;   
-    /*margin-left   : 750px;   */
+    /*margin-right   : 30px;   */
+    text-align: left;
 }
 
-/*.message_blue:hover {
+.message_blue:hover {
     background-color:rgb(100, 240, 248) !important;
     border-radius : 7px;
     color         : white;
     padding       : 20px; 
     max-width     : 100%;
-    margin-left   : 40px;
-    
-}*/
+    /*margin-right   : 30px;*/
+    text-align: left;
+}

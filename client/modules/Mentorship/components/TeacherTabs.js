@@ -20,7 +20,6 @@ class TeacherTabs extends React.Component {
     this.handleActive = this.handleActive.bind(this);
   }
   handleActive(tab) {
-    console.log(tab.props.index);
     this.props.dispatch(selectTeacher(tab.props.index));
   }
   render(){
