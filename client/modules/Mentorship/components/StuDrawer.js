@@ -14,7 +14,7 @@ import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 
 import Data from '../../../data';
 //===========    Redux   ===============
-import {selectStudent} from '../MentorshipActions';
+import {selectStudent, removeBadge } from '../MentorshipActions';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
 
@@ -51,6 +51,7 @@ class StuDrawer extends React.Component {
       studentsItems: this.props.stuDrawerItems,
       isStudentsLoaded: this.props.isStudentsLoaded,
       conversations  : this. props.conversations,
+      isBadgeRemoved : [false,]
     };
 
     this.getbadgeContent = this.getbadgeContent.bind(this);
@@ -87,9 +88,10 @@ class StuDrawer extends React.Component {
           return (     
               unread_message_count > 0 ?
               <Badge
+              style = {{position : 'absolute', left : '250px'}}
               badgeContent={ unread_message_count }
               primary={true}
-              //badgeStyle={{top: 12, right: 12}}
+              badgeStyle={{top: 12, right: 12}}
               >     
               </Badge>
               :
@@ -143,6 +145,7 @@ class StuDrawer extends React.Component {
                     key={k}
                     onClick={() => {
                     dispatch(selectStudent(k));
+                    this.setState({isBadgeRemoved : true});
                   }}
                     style={{
                     height: 70,
@@ -153,13 +156,19 @@ class StuDrawer extends React.Component {
                   }}
                     data-route="/dashboard">
                     {this.state.studentsItems[k].first_name + ' ' + this.state.studentsItems[k].last_name}
-                    {this.getbadgeContent(k)} 
-                   
+                    {
+                      this.state.isBadgeRemoved == true ? 
+                        null 
+                        :
+                        this.getbadgeContent(k)       
+                    }
+                            
                   </MenuItem>
                 : <MenuItem
                   key={k}
                   onClick={() => {
                   dispatch(selectStudent(k));
+                  this.setState({isBadgeRemoved : true});
                 }}
                   style={{
                   height: 70,

@@ -46,7 +46,9 @@ class MentorshipPage extends React.Component {
         selectedTeacherID: '-1',
         selectedConversationId :'',
         selectedMessageurl : '',
-        auth_token : '',
+        //auth_token : '',
+        auth_token : {},
+        auth_token_Array : [],
         isStudentsLoaded : '0',  // 0 : initial,  1 : loadding, 2 : loaded 
         
         conversations: '',
@@ -57,6 +59,7 @@ class MentorshipPage extends React.Component {
 
     
     this.fetchConversations  = this.fetchConversations.bind(this);
+    this.fetchConversationsForTeachers = this.fetchConversationsForTeachers.bind(this);
     //this.fetchStudents  = this.fetchStudents.bind(this);
     //this.fetchMessages  = this.fetchMessages.bind(this);
     //this.sendMessage    = this.sendMessage.bind(this);
@@ -66,18 +69,52 @@ class MentorshipPage extends React.Component {
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
   }
 
-  componentDidMount (){
 
+  componentDidMount(){
+    let _this = this;
+    console.log("componentDidMount");
+
+    Data.TeacherTabs.map(function(teacher,teacherIndex){
+
+        var settings = {                
+          "url": "https://hoth.udacity.com/v2/authenticate",
+          "method": "POST",
+          "headers": {
+            "accept": "application/json",
+            "content-type": "application/json",
+          },
+          "data": JSON.stringify(
+          {
+            "email"    : teacher.email,
+            "password" : teacher.passWord,
+          })
+        };
+        $.ajax(settings).done(function (response) {
+           let auth_token_temp = "Bearer " + JSON.parse(response).jwt;
+            _this.setState((prevState, props) => {
+              // return { messageList: [response, ...prevState.messageList] };
+              // prevState.auth_token_Array.push({"guru_uid" : teacher.guru_uid, auth_token : "Bearer " + JSON.parse(response).jwt });
+              return { auth_token_Array : [{ 
+                index : teacherIndex,  
+                "guru_uid" : teacher.guru_uid, auth_token : "Bearer " + JSON.parse(response).jwt,
+                conversations : {},
+                total_unread : 0,
+              }, 
+              ...prevState.auth_token_Array] 
+              };
+            }); 
+            _this.fetchConversationsForTeachers(teacherIndex,auth_token_temp);
+
+        });
+    })
   }
 
   componentWillReceiveProps(nextProps){
     let _this = this;
-        //console.log(this.state.selectedTeacherID);
-        //console.log(nextProps.selectedTeacherID);
+      
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
 
-         //console.log("teacher updated!");
           if (this.state.selectedTeacherID != nextProps.selectedTeacherID) 
             { 
               this.setState({ isStudentsLoaded : '1' });
@@ -110,7 +147,7 @@ class MentorshipPage extends React.Component {
                       _this.setState({ students : res.students });
                       _this.setState({isStudentsLoaded : '2'});
                       _this.fetchConversations(nextProps.selectedTeacherID);
-                      //console.log(_this.state.students);
+                      
                   });
               });
             }   
@@ -136,8 +173,6 @@ class MentorshipPage extends React.Component {
     headers : { Accept : "application/vnd.layer+json; version=1.0" }
   })
   .done(function( res ) {
-        //console.log(_this.state.auth_token);
-        //console.log(Data.TeacherTabs[selectedTeacherID].guru_uid);
 
         $.ajax({
           method: "POST",
@@ -170,7 +205,7 @@ class MentorshipPage extends React.Component {
                         'authorization' : 'Layer session-token="' +   res.session_token + '"' },
         })
     .done(function(res){
-        //_this.setState({isStudentsLoaded : true});
+        
         _this.setState({conversations : res });
         console.log("Fetch Conversation OK!")
       })
@@ -178,6 +213,69 @@ class MentorshipPage extends React.Component {
     })
   });
 }
+
+  fetchConversationsForTeachers(selectedTeacherID, auth_token ){
+    let _this = this;
+
+  $.ajax({
+    method: "POST",
+    url: "https://api.layer.com/nonces",
+    headers : { Accept : "application/vnd.layer+json; version=1.0" }
+  })
+  .done(function( res ) {    
+
+        $.ajax({
+          method: "POST",
+          url: "https://guru.udacity.com/api/get_identity_token",
+          headers : { 'accept'  : 'application/json, text/plain', 
+                      'Content-Type'  : 'application/json; charset=UTF-8',                     
+                      'Authorization' : auth_token,
+                    },
+          data: JSON.stringify({
+              "nonce" : res.nonce,
+              "uid"   : Data.TeacherTabs[selectedTeacherID].guru_uid
+        })
+    })
+    .done(function(res){          
+        $.ajax({
+            method: "POST",
+            url: "https://api.layer.com/sessions",
+            headers : { 'accept'  : 'application/vnd.layer+json; version=1.0' },
+            data: JSON.stringify({
+                'app_id' : "layer:///apps/production/7681aaf4-21fa-11e6-a25e-59700300610c",
+                'identity_token'   : res.identity_token
+        })
+    })
+    .done(function(res){
+   
+        $.ajax({
+            method: "GET",
+            url: "https://api.layer.com/conversations?sort_by=created_at&page_size=100",
+            headers : {  'accept'  : 'application/vnd.layer+json; version=1.0' ,
+                        'authorization' : 'Layer session-token="' +   res.session_token + '"' },
+        })
+    .done(function(res){
+        let ntotal_unread = 0;        
+        res.forEach( function (conversation){
+            ntotal_unread += conversation.unread_message_count;
+        });
+
+        var temp = _this.state.auth_token_Array;
+        
+        for (let i = 0 ;  i < temp.length; i++){
+          if (temp[i].index == selectedTeacherID){
+            temp[i].total_unread = ntotal_unread;
+            break
+          }
+        }
+        _this.setState({auth_token_Array : temp });
+        console.log("Fetch Conversations for Teachers OK!");
+      })
+     })
+    })
+  });
+}
+
   getMessageURLfromConversation(conversations , selectedStudentID ){
       let _this  = this;
       let messageurl = null;      
@@ -232,7 +330,7 @@ class MentorshipPage extends React.Component {
 
               <div style={{position:'absolute', left:350, top:0, width:'calc(100% - 350px)', height:'100%', display:'inline-block'}}>
                   <div style={{width:'100%', height:'50px'}}>
-                      <TeacherTabs />
+                      <TeacherTabs auth_token_Array= {this.state.auth_token_Array} />
                   </div>
                   <div style={{width:'100%', height:'calc(100% - 50px)'}}>
                       <MessageList messageUrl={this.state.selectedMessageurl} />

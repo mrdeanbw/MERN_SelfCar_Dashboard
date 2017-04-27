@@ -5,6 +5,9 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import {Grid, Row, Col} from 'react-bootstrap';
 
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
+import NotificationsIcon from 'material-ui/svg-icons/social/notifications'; 
 import Data from '../../../data';
 
 import { selectTeacher } from '../MentorshipActions';
@@ -16,11 +19,48 @@ class TeacherTabs extends React.Component {
     super(props);
     this.state = {
       open: true,
+      auth_token_Array : this.props.auth_token_Array,
     }; 
     this.handleActive = this.handleActive.bind(this);
+    this.getbadgeContent = this.getbadgeContent.bind(this);
+    
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.auth_token_Array != nextProps.auth_token_Array){
+      this.setState({ auth_token_Array : nextProps.auth_token_Array });
+    }
+  }
+
   handleActive(tab) {
     this.props.dispatch(selectTeacher(tab.props.index));
+  }
+  
+  getbadgeContent = (teacherID, teacherName)=>{
+    let _this = this;
+    // console.log(teacherID);
+    // console.log(teacherName);
+    // console.log(_this.state.auth_token_Array);
+    // console.log(_this.state.auth_token_Array.length);
+    if (_this.state.auth_token_Array.length < 9 ) return teacherName;
+    for (var i =0 ; i < _this.state.auth_token_Array.length ; i++ ){
+      
+      if (_this.state.auth_token_Array[i].index == teacherID){
+        console.log(_this.state.auth_token_Array[i].index);
+        console.log(_this.state.auth_token_Array[i].total_unread);
+        return (
+          _this.state.auth_token_Array[i].total_unread > 0 ?
+                <Badge
+                      badgeContent={_this.state.auth_token_Array[i].total_unread}
+                      secondary={true}
+                    >
+                    {teacherName}
+                </Badge>
+                :
+                teacherName
+        )
+      }
+    }
   }
   render(){
     return(
@@ -28,9 +68,14 @@ class TeacherTabs extends React.Component {
           <Tabs>
               {
                 Data.TeacherTabs.map((teachertab,index)=>
-                  <Tab key={index} index={index} label = {teachertab.name} data-route="/dashboard" onActive={this.handleActive}>                
-
+                  //<Tab key={index} index={index} label = {teachertab.name} data-route="/dashboard" onActive={this.handleActive}>                
+                  <Tab key={index} index={index} data-route="/dashboard" onActive={this.handleActive}
+                  label = {
+                 this.getbadgeContent(index, teachertab.name) 
+                
+                  }>                                          
                   </Tab>
+
                 )
               }
           </Tabs>

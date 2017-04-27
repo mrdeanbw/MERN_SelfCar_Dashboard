@@ -34,7 +34,10 @@ class MessageList extends React.Component {
     this.deleteMessage = this.deleteMessage.bind(this);
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
     this.generateWordTag = this.generateWordTag.bind(this);   
-    this.removeBadge = this.removeBadge.bind(this) ;
+    this.removeBadge = this.removeBadge.bind(this);
+    this.markUnread = this.markUnread.bind(this);
+    this.getRecipient_status = this.getRecipient_status.bind(this);
+
   }
 
   componentDidMount(){
@@ -92,6 +95,25 @@ class MessageList extends React.Component {
       });
    }
  }
+
+ markUnread(receipts_url){
+    let _this = this;
+    let settings = {
+      "url": receipts_url,
+      "method": "POST",
+      "headers": {
+        "accept": "application/vnd.layer+json; version=1.0",
+        "authorization": 'Layer session-token="'+ _this.props.sessionToken +'"',
+        "content-type": "application/json",
+      },
+      "data" : JSON.stringify({
+          "type" : "unread"
+      })
+    }
+    $.ajax(settings).done(function (response) {
+        console.log("mark as unread OK!");
+    }); 
+ }
  sendMessage(){
    if (!this.state.messageText)   return ;  
       //console.log(this.state.messageText);
@@ -127,7 +149,7 @@ class MessageList extends React.Component {
       console.log(response);
       this.setState((prevState, props) => {
         return { messageList: [response, ...prevState.messageList] };
-      });
+      });   
 
     }.bind(this));
  }
@@ -151,7 +173,17 @@ class MessageList extends React.Component {
       //console.log(_this.state.messageList);  
     });
  }
+ getRecipient_status(message){
+    let _this = this;
+    let status = '';
+    Object.keys(message.recipient_status).forEach(function(key){
+      status += message.recipient_status[key];
+    });
+    console.log(status);
 
+    if (status != "readread") return " sent";
+    return " read";   
+ }
  generateWordTag(message, messageIndex){
    let _this = this ;
    var messagestyle, messageDivStyle;
@@ -175,12 +207,18 @@ class MessageList extends React.Component {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                       >
+                        <MenuItem primaryText="Mark Unread"    onClick={() => _this.markUnread(message.receipts_url)}  />
                         <MenuItem primaryText="Delete Message" onClick={() => _this.deleteMessage(message.url, messageIndex)}/>
+                        
                       </IconMenu>
                   </div>       
-                  <div> 
-                    {message.sent_at} 
-                    <hr/>
+                  <div style ={{color: '#bcc9d4'}}> 
+                    {message.sent_at.substr(0,16).replace("T"," ")} 
+                    {
+                        _this.getRecipient_status(message)
+                    }
+                   
+                    {/*<hr/>*/}
                   </div>
               </div>
              );
@@ -207,8 +245,7 @@ class MessageList extends React.Component {
                 :
                 this.state.isConversationsLoaded == '2' ?
               <div style={{width:'100%', height:'100%' }}>
-                <div style={{width:'100%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
-                    
+                <div style={{width:'98%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
                     {        
                       //this.state.messageList &&
                       this.state.messageList.map((message, index) =>
