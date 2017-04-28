@@ -29,15 +29,13 @@ class MessageList extends React.Component {
       messageText  : '',
       isConversationsLoaded: '0', // 0 : initial,  1 : loadding, 2 : loaded 
     };
-
     this.sendMessage = this.sendMessage.bind(this);
     this.deleteMessage = this.deleteMessage.bind(this);
-    this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
     this.generateWordTag = this.generateWordTag.bind(this);   
     this.removeBadge = this.removeBadge.bind(this);
     this.markUnread = this.markUnread.bind(this);
     this.getRecipient_status = this.getRecipient_status.bind(this);
-
+    this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
   }
 
   componentDidMount(){
@@ -61,8 +59,6 @@ class MessageList extends React.Component {
         this.setState({messageList: response});
         this.setState({ isConversationsLoaded : '2' });
         this.removeBadge(response);
-        
-        //console.log(response);
       }.bind(this));
     }
   }
@@ -179,8 +175,7 @@ class MessageList extends React.Component {
     Object.keys(message.recipient_status).forEach(function(key){
       status += message.recipient_status[key];
     });
-    console.log(status);
-
+    //console.log(status);
     if (status != "readread") return " sent";
     return " read";   
  }
@@ -203,7 +198,9 @@ class MessageList extends React.Component {
               <div key={index} className={messageDivStyle}>
                   <div>
                       <IconMenu
-                        iconButtonElement={<p className={messagestyle}> {message.parts[k].body} </p>}
+                        
+                        iconButtonElement={<IconMenu className={messagestyle}> { message.parts[k].body } </IconMenu>}
+                        
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                       >

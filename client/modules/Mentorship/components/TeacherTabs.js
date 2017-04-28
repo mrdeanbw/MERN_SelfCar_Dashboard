@@ -18,17 +18,17 @@ class TeacherTabs extends React.Component {
     constructor(props) {
     super(props);
     this.state = {
-      open: true,
       auth_token_Array : this.props.auth_token_Array,
     }; 
     this.handleActive = this.handleActive.bind(this);
-    this.getbadgeContent = this.getbadgeContent.bind(this);
-    
+    this.getBadgeContent = this.getBadgeContent.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.auth_token_Array != nextProps.auth_token_Array){
+    let _this = this;
+    if (_this.state.auth_token_Array != nextProps.auth_token_Array){
       this.setState({ auth_token_Array : nextProps.auth_token_Array });
+  
     }
   }
 
@@ -36,24 +36,17 @@ class TeacherTabs extends React.Component {
     this.props.dispatch(selectTeacher(tab.props.index));
   }
   
-  getbadgeContent = (teacherID, teacherName)=>{
+  getBadgeContent = (teacherID, teacherName)=>{
     let _this = this;
-    // console.log(teacherID);
-    // console.log(teacherName);
-    // console.log(_this.state.auth_token_Array);
-    // console.log(_this.state.auth_token_Array.length);
-    if (_this.state.auth_token_Array.length < 9 ) return teacherName;
+    if (_this.state.auth_token_Array.length < 8 ) return teacherName;
     for (var i =0 ; i < _this.state.auth_token_Array.length ; i++ ){
-      
       if (_this.state.auth_token_Array[i].index == teacherID){
-        console.log(_this.state.auth_token_Array[i].index);
-        console.log(_this.state.auth_token_Array[i].total_unread);
         return (
           _this.state.auth_token_Array[i].total_unread > 0 ?
                 <Badge
                       badgeContent={_this.state.auth_token_Array[i].total_unread}
                       secondary={true}
-                    >
+                >
                     {teacherName}
                 </Badge>
                 :
@@ -62,23 +55,22 @@ class TeacherTabs extends React.Component {
       }
     }
   }
+
   render(){
     return(
         <Grid fluid={true} style={{paddingLeft: 0, paddingRight: 0, width:'100%', height:'100%' }}>
-          <Tabs>
-              {
-                Data.TeacherTabs.map((teachertab,index)=>
-                  //<Tab key={index} index={index} label = {teachertab.name} data-route="/dashboard" onActive={this.handleActive}>                
-                  <Tab key={index} index={index} data-route="/dashboard" onActive={this.handleActive}
-                  label = {
-                 this.getbadgeContent(index, teachertab.name) 
-                
-                  }>                                          
-                  </Tab>
-
-                )
-              }
-          </Tabs>
+            <Tabs>
+                {
+                  Data.TeacherTabs.map((teachertab,index)=>
+                    //<Tab key={index} index={index} label = {teachertab.name} data-route="/dashboard" onActive={this.handleActive}>                
+                    <Tab key={index} index={index} data-route="/dashboard" onActive={this.handleActive}
+                    label = {
+                      this.getBadgeContent(index, teachertab.name) 
+                    }>                                          
+                    </Tab>
+                  )
+                }
+            </Tabs>
         </Grid>
     );
   }
