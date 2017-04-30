@@ -45,7 +45,7 @@ class MessageList extends React.Component {
   componentWillReceiveProps(nextProps){
     if ( this.props.messageUrl != nextProps.messageUrl ) {
       this.setState({ isConversationsLoaded : '1' });
-    
+     // fetch Messages for selected student
       var settings = {
         "url": nextProps.messageUrl,
         "method": "GET",
@@ -199,7 +199,7 @@ class MessageList extends React.Component {
                   <div>
                       <IconMenu
                         
-                        iconButtonElement={<IconMenu className={messagestyle}> { message.parts[k].body } </IconMenu>}
+                        iconButtonElement={<p className={messagestyle}> { message.parts[k].body } </p>}
                         
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
