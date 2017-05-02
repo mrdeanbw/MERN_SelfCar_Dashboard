@@ -5,7 +5,6 @@ import Menu from 'material-ui/Menu';
 import RaisedButton from 'material-ui/RaisedButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-
 import CircularProgress from 'material-ui/CircularProgress';
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';

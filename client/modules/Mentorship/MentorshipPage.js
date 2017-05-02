@@ -68,10 +68,12 @@ class MentorshipPage extends React.Component {
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
   }
 
-  componentWillMount(){
+  componentDidMount(){
     let _this = this;
     Data.TeacherTabs.map(function(teacher,teacherIndex){
-        var settings = {                
+        //var teacher  = Data.TeacherTabs[0]; console.log(teacher);
+        //var teacherIndex = 0; console.log(teacherIndex);
+        let settings = {                
           "url": "https://hoth.udacity.com/v2/authenticate",
           "method": "POST",
           "headers": {
@@ -82,11 +84,10 @@ class MentorshipPage extends React.Component {
           {
             "email"    : teacher.email,
             "password" : teacher.passWord,
-          })
-        };
+          }) 
+        }
         $.ajax(settings).done(function (response) {
-           let auth_token_temp = "Bearer " + JSON.parse(response).jwt;
-     
+           var auth_token_temp = "Bearer " + JSON.parse(response).jwt;
             _this.setState((prevState, props) => {
               return { auth_token_Array : [{ 
                 index : teacherIndex,  
@@ -97,8 +98,7 @@ class MentorshipPage extends React.Component {
               ...prevState.auth_token_Array] 
               };
             });
-            
-            var settings = {
+            let settings = {
               "url": "https://guru.udacity.com/api/guru/get_students?guru_uid=" + Data.TeacherTabs[teacherIndex].guru_uid,
               "method": "GET",
               "headers": {
@@ -107,6 +107,7 @@ class MentorshipPage extends React.Component {
             };
 
             $.ajax(settings).done(function (res) {
+              //console.log(res);
               _this.setState((prevState, props) => {
                 return { students_Array : [
                   {
@@ -117,12 +118,12 @@ class MentorshipPage extends React.Component {
                 };
               });  
             });
-            _this.fetchConversationsForTeachers(teacherIndex,auth_token_temp);
-            
-        });
-    });
-  }
+           _this.fetchConversationsForTeachers(teacherIndex,auth_token_temp);
 
+        });
+  });
+  }
+ 
   componentWillReceiveProps(nextProps){
     let _this = this;
       
@@ -137,7 +138,7 @@ class MentorshipPage extends React.Component {
               this.setState({ isStudentsLoaded : '1' });
               this.setState({ selectedTeacherID : nextProps.selectedTeacherID });
           
-              var settings = {                
+              let settings = {                
                 "url": "https://hoth.udacity.com/v2/authenticate",
                 "method": "POST",
                 "headers": {
@@ -153,7 +154,7 @@ class MentorshipPage extends React.Component {
 
               $.ajax(settings).done(function (response) {
                   _this.setState({auth_token : "Bearer " + JSON.parse(response).jwt });
-                  var settings = {
+                  let settings = {
                     "url": "https://guru.udacity.com/api/guru/get_students?guru_uid=" + Data.TeacherTabs[nextProps.selectedTeacherID].guru_uid,
                     "method": "GET",
                     "headers": {
@@ -169,14 +170,6 @@ class MentorshipPage extends React.Component {
                       
                   });
               });    
-              // for (let i = 0 ; i<_this.state.students_Array.length;i++){
-              //   if (_this.state.students_Array[i].guru_id == nextProps.selectedTeacherID){
-              //     let res = _this.state.students_Array[i].studata.students;
-              //     _this.setState({students : res });
-              //     _this.setState({isStudentsLoaded : '2'});
-              //   }
-              // }
-              // _this.fetchConversations(nextProps.selectedTeacherID);
             }   
         if (this.state.selectedStudentID != nextProps.selectedStudentId){
           this.setState({ selectedStudentID : nextProps.selectedStudentId });
