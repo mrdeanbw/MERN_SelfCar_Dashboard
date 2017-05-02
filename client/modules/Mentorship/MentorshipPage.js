@@ -8,7 +8,7 @@ import fetch from 'isomorphic-fetch';
 //=================== Redux ========================
 
 import { connect } from 'react-redux';
-import { getSelectedStudentId, getSelectedTeacherID } from './MentorshipReducer';
+import { getSelectedStudentId, getSelectedTeacherID, getFetchedMessages } from './MentorshipReducer';
 
 //=================== /Redux ========================
 
@@ -53,6 +53,7 @@ class MentorshipPage extends React.Component {
         isStudentsLoaded : '0',  // 0 : initial,  1 : loadding, 2 : loaded 
         
         conversations: '',
+        fetchedMessages : [],
         messageItems : {},
         session_token : '',
         messageText   : "",
@@ -125,9 +126,12 @@ class MentorshipPage extends React.Component {
   componentWillReceiveProps(nextProps){
     let _this = this;
       
+    if (this.state.fetchedMessages != nextProps.fetchedMessages){
+      this.setState({ fetchedMessages : nextProps.fetchedMessages });    
+    }
+
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
-
           if (this.state.selectedTeacherID != nextProps.selectedTeacherID) 
             { 
               this.setState({ isStudentsLoaded : '1' });
@@ -159,6 +163,7 @@ class MentorshipPage extends React.Component {
 
                   $.ajax(settings).done(function (res) {
                       _this.setState({ students : res.students });
+                      //console.log(res.students);
                       _this.setState({isStudentsLoaded : '2'});
                       _this.fetchConversations(nextProps.selectedTeacherID);
                       
@@ -363,7 +368,7 @@ class MentorshipPage extends React.Component {
               </div>
 
               <div style={{width:'300px', height:'100%', display:'inline-block'}}>
-                  <StuDrawer isStudentsLoaded = {this.state.isStudentsLoaded} stuDrawerItems={this.state.students} conversations={this.state.conversations} />
+                  <StuDrawer isStudentsLoaded = {this.state.isStudentsLoaded} stuDrawerItems={this.state.students} selectedTeacherID ={this.state.selectedTeacherID} conversations={this.state.conversations} />
               </div>
 
               <div style={{position:'absolute', left:350, top:0, width:'calc(100% - 350px)', height:'100%', display:'inline-block'}}>
@@ -383,7 +388,8 @@ class MentorshipPage extends React.Component {
 const mapStateToProps = (state) => {
   return {
     selectedStudentId : getSelectedStudentId(state),
-    selectedTeacherID : getSelectedTeacherID(state)
+    selectedTeacherID : getSelectedTeacherID(state),
+    fetchedMessages   : getFetchedMessages(state)
   };
 };
 

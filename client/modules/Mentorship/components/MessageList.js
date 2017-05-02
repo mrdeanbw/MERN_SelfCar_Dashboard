@@ -12,15 +12,19 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import request from '../../../../server/util/requestApi';
-import { connect } from 'react-redux';
+
 import $ from 'jquery';
 
-
+//===========    Redux   ===============
+import { connect } from 'react-redux';
+import { fetchMessages, markUnreadMessage } from '../MentorshipActions';
 import { getSessionToken, getSelectedTeacherID } from '../MentorshipReducer';
+//===========    /Redux   ===============
 import Data from '../../../data';
 import css from '../style/MessageList.css';
 
 class MessageList extends React.Component {
+  list = {};
 
   constructor(props) {
     super(props);
@@ -39,7 +43,17 @@ class MessageList extends React.Component {
   }
 
   componentDidMount(){
+      var textarea = document.getElementById('messageArea_id');
+      
+      if (textarea) {
+        //console.log("NOT NULL!",textarea);
+        //textarea.scrollTop = textarea.scrollHeight;
+        $("#messageArea_id").scrollTop($("#messageArea_id")[0].scrollHeight);
+      }  
+  }
 
+  componentDidUpdate() {
+    //console.log(this.list);
   }
 
   componentWillReceiveProps(nextProps){
@@ -57,6 +71,9 @@ class MessageList extends React.Component {
       }
       $.ajax(settings).done(function (response) {
         this.setState({messageList: response});
+        
+        this.props.dispatch(fetchMessages(response));
+
         this.setState({ isConversationsLoaded : '2' });
         this.removeBadge(response);
       }.bind(this));
@@ -92,7 +109,9 @@ class MessageList extends React.Component {
    }
  }
 
- markUnread(receipts_url){
+ markUnread(receipts_url, markUnreadStuID){
+    //console.log("unreadId", markUnreadStuID);
+    this.props.dispatch(markUnreadMessage(markUnreadStuID));
     let _this = this;
     let settings = {
       "url": receipts_url,
@@ -106,13 +125,13 @@ class MessageList extends React.Component {
           "type" : "unread"
       })
     }
-    $.ajax(settings).done(function (response) {
-        console.log("mark as unread OK!");
-    }); 
+    // $.ajax(settings).done(function (response) {
+      
+    //     //this.props.dispatch(markUnreadMessage(markUnreadStuID));
+    // }); 
  }
  sendMessage(){
    if (!this.state.messageText)   return ;  
-      //console.log(this.state.messageText);
       var settings = {
           "url": this.props.messageUrl,
           "method": "POST",
@@ -142,12 +161,12 @@ class MessageList extends React.Component {
     }
     
     $.ajax(settings).done(function (response) {
-      console.log(response);
       this.setState((prevState, props) => {
         return { messageList: [response, ...prevState.messageList] };
       });   
-
     }.bind(this));
+    this.setState({ messageText : ""});
+    $("#messageArea_id").scrollTop($("#messageArea_id")[0].scrollHeight);
  }
 
  deleteMessage(messageUrlToDelete, messageIndexToDelete){
@@ -166,7 +185,6 @@ class MessageList extends React.Component {
       _this.setState((prevState,props)=>{
         messageList :  prevState.messageList.splice(messageIndexToDelete,1);
       })  
-      //console.log(_this.state.messageList);  
     });
  }
  getRecipient_status(message){
@@ -175,15 +193,21 @@ class MessageList extends React.Component {
     Object.keys(message.recipient_status).forEach(function(key){
       status += message.recipient_status[key];
     });
-    //console.log(status);
     if (status != "readread") return " sent";
     return " read";   
  }
  generateWordTag(message, messageIndex){
    let _this = this ;
+   var markUnreadStuID = 0;
+   Object.keys(message.recipient_status).forEach(function(key){
+     if (key != Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid){
+       markUnreadStuID = key;
+       //console.log("markstuid", markUnreadStuID);
+     } 
+   })
    var messagestyle, messageDivStyle;
     return Object.keys(message.parts).map(function(k, index){
-    
+      
       if (message.sender.user_id == Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid ){
           messagestyle = css.message_blue;
           messageDivStyle = css.message_div_blue;
@@ -195,7 +219,7 @@ class MessageList extends React.Component {
       }
           
       return (
-              <div key={index} className={messageDivStyle}>
+              <div key={index} className={messageDivStyle} >
                   <div>
                       <IconMenu
                         
@@ -204,16 +228,14 @@ class MessageList extends React.Component {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                       >
-                        <MenuItem primaryText="Mark Unread"    onClick={() => _this.markUnread(message.receipts_url)}  />
+                        <MenuItem primaryText="Mark Unread"    onClick={() => _this.markUnread(message.receipts_url,markUnreadStuID)}  />
                         <MenuItem primaryText="Delete Message" onClick={() => _this.deleteMessage(message.url, messageIndex)}/>
                         
                       </IconMenu>
                   </div>       
                   <div style ={{color: '#bcc9d4'}}> 
-                    {message.sent_at.substr(0,16).replace("T"," ")} 
-                    {
-                        _this.getRecipient_status(message)
-                    }
+                    { message.sent_at.substr(0,16).replace("T"," ") } 
+                    { _this.getRecipient_status(message) }
                    
                     {/*<hr/>*/}
                   </div>
@@ -224,7 +246,6 @@ class MessageList extends React.Component {
 
   render() {
     let _this = this;
-
    return (
         <Grid fluid={true} style={{width:'100%', height:'100%' }}>
 
@@ -242,7 +263,7 @@ class MessageList extends React.Component {
                 :
                 this.state.isConversationsLoaded == '2' ?
               <div style={{width:'100%', height:'100%' }}>
-                <div style={{width:'98%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
+                <div id="messageArea_id" style={{width:'98%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
                     {        
                       //this.state.messageList &&
                       this.state.messageList.map((message, index) =>
@@ -278,6 +299,7 @@ const mapStateToProps = (state) => {
   return {
     sessionToken : getSessionToken(state),
     selectedTeacherID : getSelectedTeacherID(state)
+    
   };
 };
 

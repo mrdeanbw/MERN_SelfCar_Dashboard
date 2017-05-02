@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications'; 
 import Data from '../../../data';
 
+//===========    Redux   ===============
 import { selectTeacher } from '../MentorshipActions';
 import { getSelectedTeacherID } from '../MentorshipReducer';
 import { connect } from 'react-redux';
@@ -28,7 +29,6 @@ class TeacherTabs extends React.Component {
     let _this = this;
     if (_this.state.auth_token_Array != nextProps.auth_token_Array){
       this.setState({ auth_token_Array : nextProps.auth_token_Array });
-  
     }
   }
 
