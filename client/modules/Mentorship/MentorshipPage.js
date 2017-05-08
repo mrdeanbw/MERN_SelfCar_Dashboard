@@ -9,7 +9,7 @@ import fetch from 'isomorphic-fetch';
 
 import { connect } from 'react-redux';
 import { getSelectedStudentId, getSelectedTeacherID, getFetchedMessages } from './MentorshipReducer';
-
+import { updateSessionToken } from './MentorshipActions';
 //=================== /Redux ========================
 
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
@@ -18,11 +18,11 @@ import Data from '../../data';
 import request from '../../../server/util/requestApi';
 import $ from 'jquery';
 
+//=================== Components ========================
 import TeacherTabs    from   './components/TeacherTabs';
 import StuDrawer      from   './components/StuDrawer';
 import SubjectDrawer  from   './components/SubjectDrawer';
 import MessageList    from   './components/MessageList';
-import { updateSessionToken } from './MentorshipActions';
 
 //=================== Material UI components ========================
 import RaisedButton from 'material-ui/RaisedButton';
@@ -59,10 +59,8 @@ class MentorshipPage extends React.Component {
         messageText   : "",
     };
 
-    
     this.fetchConversations  = this.fetchConversations.bind(this);
     this.fetchConversationsForTeachers = this.fetchConversationsForTeachers.bind(this);
-    
     this.handleChangeRequestNavDrawer = this.handleChangeRequestNavDrawer.bind(this);
     this.getMessageURLfromConversation = this.getMessageURLfromConversation.bind(this);
     this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
@@ -71,8 +69,6 @@ class MentorshipPage extends React.Component {
   componentDidMount(){
     let _this = this;
     Data.TeacherTabs.map(function(teacher,teacherIndex){
-        //var teacher  = Data.TeacherTabs[0]; console.log(teacher);
-        //var teacherIndex = 0; console.log(teacherIndex);
         let settings = {                
           "url": "https://hoth.udacity.com/v2/authenticate",
           "method": "POST",
@@ -107,7 +103,6 @@ class MentorshipPage extends React.Component {
             };
 
             $.ajax(settings).done(function (res) {
-              //console.log(res);
               _this.setState((prevState, props) => {
                 return { students_Array : [
                   {
@@ -119,18 +114,15 @@ class MentorshipPage extends React.Component {
               });  
             });
            _this.fetchConversationsForTeachers(teacherIndex,auth_token_temp);
-
         });
   });
   }
  
   componentWillReceiveProps(nextProps){
-    let _this = this;
-      
+    let _this = this; 
     if (this.state.fetchedMessages != nextProps.fetchedMessages){
       this.setState({ fetchedMessages : nextProps.fetchedMessages });    
     }
-
       // Only when the props are changed 
       if (this.state.selectedTeacherID != nextProps.selectedTeacherID || this.state.selectedStudentID != nextProps.selectedStudentId){
           if (this.state.selectedTeacherID != nextProps.selectedTeacherID) 
@@ -164,7 +156,6 @@ class MentorshipPage extends React.Component {
 
                   $.ajax(settings).done(function (res) {
                       _this.setState({ students : res.students });
-                      //console.log(res.students);
                       _this.setState({isStudentsLoaded : '2'});
                       _this.fetchConversations(nextProps.selectedTeacherID);
                       
@@ -225,9 +216,7 @@ class MentorshipPage extends React.Component {
                         'authorization' : 'Layer session-token="' +   res.session_token + '"' },
         })
     .done(function(res){
-        
         _this.setState({conversations : res });
-        //console.log("Fetch Conversation OK!")
       })
      })
     })
@@ -278,8 +267,7 @@ class MentorshipPage extends React.Component {
                 {
                   guru_id : Data.TeacherTabs[selectedTeacherID].guru_uid,
                   conversationData : res
-                }
-              , 
+                },
               ...prevState.conversations_Array] 
               };
             });
@@ -307,7 +295,6 @@ class MentorshipPage extends React.Component {
             }
             return { auth_token_Array : temp }; 
           });
-          //console.log("Fetch Conversations for Teachers OK!");
         })
       })
       })

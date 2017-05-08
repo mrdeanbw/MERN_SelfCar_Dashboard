@@ -24,8 +24,6 @@ import Data from '../../../data';
 import css from '../style/MessageList.css';
 
 class MessageList extends React.Component {
-  list = {};
-
   constructor(props) {
     super(props);
     this.state = {
@@ -43,17 +41,12 @@ class MessageList extends React.Component {
   }
 
   componentDidMount(){
-      var textarea = document.getElementById('messageArea_id');
-      
+    if (this.textInput) this.textInput.scrollIntoView(false);
+      var textarea = document.getElementById('messageArea_id');      
       if (textarea) {
-        //console.log("NOT NULL!",textarea);
-        //textarea.scrollTop = textarea.scrollHeight;
+        textarea.scrollTop = textarea.scrollHeight;
         $("#messageArea_id").scrollTop($("#messageArea_id")[0].scrollHeight);
       }  
-  }
-
-  componentDidUpdate() {
-    //console.log(this.list);
   }
 
   componentWillReceiveProps(nextProps){
@@ -110,7 +103,6 @@ class MessageList extends React.Component {
  }
 
  markUnread(receipts_url, markUnreadStuID){
-    //console.log("unreadId", markUnreadStuID);
     this.props.dispatch(markUnreadMessage(markUnreadStuID));
     let _this = this;
     let settings = {
@@ -125,10 +117,6 @@ class MessageList extends React.Component {
           "type" : "unread"
       })
     }
-    // $.ajax(settings).done(function (response) {
-      
-    //     //this.props.dispatch(markUnreadMessage(markUnreadStuID));
-    // }); 
  }
  sendMessage(){
    if (!this.state.messageText)   return ;  
@@ -202,7 +190,6 @@ class MessageList extends React.Component {
    Object.keys(message.recipient_status).forEach(function(key){
      if (key != Data.TeacherTabs[_this.props.selectedTeacherID].guru_uid){
        markUnreadStuID = key;
-       //console.log("markstuid", markUnreadStuID);
      } 
    })
    var messagestyle, messageDivStyle;
@@ -222,22 +209,17 @@ class MessageList extends React.Component {
               <div key={index} className={messageDivStyle} >
                   <div>
                       <IconMenu
-                        
                         iconButtonElement={<p className={messagestyle}> { message.parts[k].body } </p>}
-                        
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                       >
                         <MenuItem primaryText="Mark Unread"    onClick={() => _this.markUnread(message.receipts_url,markUnreadStuID)}  />
                         <MenuItem primaryText="Delete Message" onClick={() => _this.deleteMessage(message.url, messageIndex)}/>
-                        
                       </IconMenu>
                   </div>       
                   <div style ={{color: '#bcc9d4'}}> 
                     { message.sent_at.substr(0,16).replace("T"," ") } 
                     { _this.getRecipient_status(message) }
-                   
-                    {/*<hr/>*/}
                   </div>
               </div>
              );
@@ -248,7 +230,6 @@ class MessageList extends React.Component {
     let _this = this;
    return (
         <Grid fluid={true} style={{width:'100%', height:'100%' }}>
-
             {this.state.isConversationsLoaded == '1'
               ?
                 <MuiThemeProvider>
@@ -263,9 +244,8 @@ class MessageList extends React.Component {
                 :
                 this.state.isConversationsLoaded == '2' ?
               <div style={{width:'100%', height:'100%' }}>
-                <div id="messageArea_id" style={{width:'98%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
+                <div ref={(input) => { this.textInput = input; }} id="messageArea_id" style={{width:'98%', height:'calc(100% - 80px)', overflowY: 'scroll'}}>
                     {        
-                      //this.state.messageList &&
                       this.state.messageList.map((message, index) =>
                           this.generateWordTag(message, index)
                       ).reverse()
@@ -280,7 +260,6 @@ class MessageList extends React.Component {
                                     onChange = { this._handleTextFieldChange }
                         /> 
                     </Col>
-
                     <Col xs={2} sm={2} md={2} lg={2}>
                       <RaisedButton label="Send" primary={true} onClick={ this.sendMessage} style={{width: '80%'}}/>
                     </Col>
@@ -299,7 +278,6 @@ const mapStateToProps = (state) => {
   return {
     sessionToken : getSessionToken(state),
     selectedTeacherID : getSelectedTeacherID(state)
-    
   };
 };
 

@@ -13,7 +13,7 @@ import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 
 import Data from '../../../data';
 //===========    Redux   ===============
-import {selectStudent, fetchMessages } from '../MentorshipActions';
+import {selectStudent, fetchMessages,updateBadgeForTeacher } from '../MentorshipActions';
 import {getSelectedStudentId, getUnreadMarkStuID } from '../MentorshipReducer';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -39,7 +39,6 @@ const styles = {
     color: '#02ccba',
     background: '#02ccba'
   }
-
 };
 
 class StuDrawer extends React.Component {
@@ -115,10 +114,8 @@ class StuDrawer extends React.Component {
     }
     if (this.state.markUnreadStuID != nextProps.markUnreadStuID){
       this.setState({ markUnreadStuID : nextProps.markUnreadStuID });
-      //console.log(nextProps.markUnreadStuID);
       this.updateBadgeContent(nextProps.markUnreadStuID, false);
     }
-    
   }
 
   handleToggle = () => this.setState({
@@ -130,7 +127,6 @@ class StuDrawer extends React.Component {
     let ntotal_unread = 0;
     
     var studentArray = Object.keys(_this.state.studentsItems);
-    
     conversations.forEach( function (conversation){
       for (var i = 0;i < Object.keys(_this.state.studentsItems).length; i++){
          let stuID = studentArray[i];
@@ -157,9 +153,9 @@ class StuDrawer extends React.Component {
         if (element.student_uid == studentID)
           return element;
       }
-
       var result = _this.state.badgeCounts_Array.find(hasStudentID); 
-      return (     
+      return (
+          result?     
           result.unread_message_count > 0 ?
           <Badge
             style = {{position : 'absolute', left : '250px'}}
@@ -170,18 +166,29 @@ class StuDrawer extends React.Component {
           </Badge>
           :
           null
+          :
+          null
         );
       }
   }
   updateBadgeContent(studentID,isBadgeRemoved){
     let _this = this;
+    const {dispatch} = _this.props;
     _this.setState((prevState, props) =>{
       let temp = [];
       Object.assign(temp, prevState.badgeCounts_Array);
       for (let i = 0 ;  i < temp.length; i++){
         if (temp[i].student_uid == studentID){
           if (isBadgeRemoved == true)
+          {
+            let tempBadgeToRemove = {
+              'stuID' : studentID,
+              'teacherID' : _this.state.selectedTeacherID,
+              'badgeCountToRemove' : temp[i].unread_message_count
+            }
+            dispatch(updateBadgeForTeacher(tempBadgeToRemove));
             temp[i].unread_message_count = 0;
+          }
           else
             temp[i].unread_message_count += 1;
           break
@@ -246,7 +253,6 @@ class StuDrawer extends React.Component {
                     {
                         this.getBadgeContent(k)       
                     }
-                            
                   </MenuItem>
                 : <MenuItem
                   key={k}

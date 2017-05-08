@@ -4,7 +4,7 @@ export const UPDATE_SESSION_TOKEN = 'UPDATE_SESSION_TOKEN';
 export const SELECT_TEACHER = 'SELECT_TEACHER';
 export const Fetch_MESSAGES = 'Fetch_MESSAGES';
 export const MARK_UNREAD = 'MARK_UNREAD';
-
+export const UPDATE_TEACHER_BADGE = 'UPDATE_TEACHER_BADGE';
 
 // Export Actions
 export function selectStudent(selectedStudentId){
@@ -39,6 +39,14 @@ export function fetchMessages(fetchedMessages){
     return{
         type : Fetch_MESSAGES,
         fetchedMessages,
+    };
+}
+
+export function updateBadgeForTeacher(badgeCountChangeState){
+
+    return{
+        type : UPDATE_TEACHER_BADGE,
+        badgeCountChangeState,
     };
 }
 
