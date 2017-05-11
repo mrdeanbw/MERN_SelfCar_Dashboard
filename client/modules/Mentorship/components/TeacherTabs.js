@@ -61,7 +61,17 @@ class TeacherTabs extends React.Component {
       }
     }
   }
-
+ upDateBadgeForTeacher = (badgeContentToRemove)=>{
+    let _this = this  ;
+    let state_auth_token_Array = [];
+    Object.assign(state_auth_token_Array, _this.state.auth_token_Array);
+    state_auth_token_Array.forEach(function(element){
+      if (element.index == badgeContentToRemove.teacherID){
+        element.total_unread = element.total_unread - badgeContentToRemove.badgeCountToRemove;
+      }
+    })    
+    _this.setState({auth_token_Array : state_auth_token_Array});
+ }
   render(){
     return(
         <Grid fluid={true} style={{paddingLeft: 0, paddingRight: 0, width:'100%', height:'100%' }}>
